@@ -1,0 +1,15 @@
+{
+  "name": "talentserv-ai-hackathon-group-14-ui",
+  "private": true,
+  "description": "PropIntel monorepo — run frontend scripts from repo root or cd into real-estate-project-frontend",
+  "scripts": {
+    "dev": "npm run dev --prefix real-estate-project-frontend",
+    "lint": "npm run lint --prefix real-estate-project-frontend",
+    "test": "npm test --prefix real-estate-project-frontend",
+    "test:ci": "npm test --prefix real-estate-project-frontend -- --ci",
+    "build": "npm run build --prefix real-estate-project-frontend",
+    "install:frontend": "npm ci --prefix real-estate-project-frontend",
+    "install:backend": "pip install -r real-estate-project-backend/requirements.txt",
+    "test:backend": "cd real-estate-project-backend && python -m pytest tests/ -v"
+  }
+}

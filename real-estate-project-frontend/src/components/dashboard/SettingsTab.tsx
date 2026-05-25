@@ -54,8 +54,8 @@ export default function SettingsTab({
         <p className="text-sm text-theme-text-muted mt-0.5">Customize your profile preferences, design themes, and developer options</p>
       </div>
 
-      <div className="grid grid-cols-12 gap-6 items-stretch">
-        <form onSubmit={handleUpdateProfile} className="col-span-7 aceternity-card p-6 rounded-2xl space-y-6 flex flex-col justify-between">
+      <div className="grid grid-cols-1 gap-4 xs:gap-5 md:grid-cols-12 md:gap-6 items-stretch">
+        <form onSubmit={handleUpdateProfile} className="col-span-1 md:col-span-12 lg:col-span-7 aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl space-y-6 flex flex-col justify-between">
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono flex items-center gap-2 border-b border-theme-border/50 pb-3">
               <User className="w-4 h-4 text-theme-accent" />
@@ -106,14 +106,14 @@ export default function SettingsTab({
           </button>
         </form>
 
-        <div className="col-span-5 space-y-6">
-          <div className="aceternity-card p-6 rounded-2xl space-y-4">
+        <div className="col-span-1 md:col-span-12 lg:col-span-5 space-y-4 xs:space-y-6">
+          <div className="aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl space-y-4">
             <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono flex items-center gap-2 border-b border-theme-border/50 pb-3">
               <Layers className="w-4 h-4 text-theme-accent" />
               <span>Workspace Style</span>
             </h3>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 xs:grid-cols-2 gap-3">
               {[
                 { id: 'charcoal-grey', label: 'Titanium Slate', color: '#a1a1aa' },
                 { id: 'sapphire-dark', label: 'Sapphire Dark', color: '#38bdf8' },
@@ -139,7 +139,7 @@ export default function SettingsTab({
             </div>
           </div>
 
-          <div className="aceternity-card p-6 rounded-2xl space-y-4">
+          <div className="aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl space-y-4">
             <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono flex items-center gap-2 border-b border-theme-border/50 pb-3">
               <Terminal className="w-4 h-4 text-theme-accent" />
               <span>Developer Settings</span>
@@ -184,7 +184,7 @@ export default function SettingsTab({
             </div>
           </div>
 
-          <div className="aceternity-card p-6 rounded-2xl space-y-4">
+          <div className="aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl space-y-4">
             <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono flex items-center gap-2 border-b border-theme-border/50 pb-3">
               <Sparkles className="w-4 h-4 text-theme-accent" />
               <span>PropIntel AI Engine</span>

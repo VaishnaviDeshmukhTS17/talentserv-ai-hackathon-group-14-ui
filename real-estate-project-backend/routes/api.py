@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from db.mongo import get_db
 from db.seed import seed_database
 from config import settings
-from services.data_repo import fetch_builders_map, fetch_sentiment_map, fetch_trends_map, insert_properties
+from services.data_repo import AtlasConnectionError, count_properties, fetch_builders_map, fetch_sentiment_map, fetch_trends_map, insert_properties
 from services.openai_service import chat_with_agent, parse_natural_language_requirement
 from services.search_pipeline import execute_search
 
@@ -35,13 +35,16 @@ class IngestRequest(BaseModel):
 @router.post("/search")
 async def search_properties(body: SearchRequest):
     db = get_db()
-    count = await db.properties.count_documents({})
-    if count == 0:
-        raise HTTPException(
-            status_code=503,
-            detail="Database not seeded. Run: python -m db.seed_cli",
-        )
-    return await execute_search(db, body.query, body.overrides)
+    try:
+        count = await count_properties(db)
+        if count == 0:
+            raise HTTPException(
+                status_code=503,
+                detail="Database not seeded. Run: python -m db.seed_cli",
+            )
+        return await execute_search(db, body.query, body.overrides)
+    except AtlasConnectionError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
 
 
 @router.post("/parse")
@@ -60,14 +63,16 @@ async def chat(body: ChatRequest):
 async def health():
     db = get_db()
     try:
-        props = await db.properties.count_documents({})
+        props = await count_properties(db)
         return {
             "status": "ok",
             "properties_in_db": props,
-            "database": "connected",
+            "database": "local_seed" if settings.prefer_local_seed else "atlas",
             "openai_active": settings.openai_configured,
             "openai_model": settings.openai_model if settings.openai_configured else None,
         }
+    except AtlasConnectionError as exc:
+        return {"status": "error", "detail": str(exc)}
     except Exception as exc:
         return {"status": "error", "detail": str(exc)}
 

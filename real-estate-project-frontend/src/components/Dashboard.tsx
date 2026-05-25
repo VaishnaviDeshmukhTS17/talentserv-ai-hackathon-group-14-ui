@@ -56,6 +56,7 @@ export default function Dashboard() {
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
   const [structuredFilters, setStructuredFilters] = useState<ParsedRequirement | null>(null);
   const [backendAiMode, setBackendAiMode] = useState<'openai' | 'fallback' | null>(null);
+  const [showSearchError, setShowSearchError] = useState(false);
   const [selectedProperties, setSelectedProperties] = useState<CleanedProperty[]>([]);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [isConsoleOpen, setIsConsoleOpen] = useState(false);
@@ -64,6 +65,7 @@ export default function Dashboard() {
   const selectTab = (tab: string) => {
     setActiveTab(tab);
     saveDashboardTab(tab, user?.email || getSessionEmail());
+    setSidebarOpen(false);
   };
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'charcoal-grey');
 
@@ -100,7 +102,12 @@ export default function Dashboard() {
       await handleSearch(newQueryText, parsed, { skipLoadingToggle: true });
     } catch (e) {
       console.error(e);
-      setChatMessages([...updatedHistory, { role: 'assistant', content: "I encountered an error processing that message. Please try again." }]);
+      setChatMessages([...updatedHistory, {
+        role: 'assistant',
+        content: 'Something went wrong. Please try again in a moment.',
+      }]);
+      setShowSearchError(true);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -147,6 +154,7 @@ export default function Dashboard() {
   }, [user]);
 
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(1);
   const [userPersona, setUserPersona] = useState('buyer');
   const [onboardingQuery, setOnboardingQuery] = useState('Looking for 2 BHK in Hinjewadi, Pune under 80 lakh, ready to move near IT park');
@@ -199,9 +207,16 @@ export default function Dashboard() {
       .then((health) => {
         if (health.status === 'ok') {
           setBackendAiMode(health.openai_active ? 'openai' : 'fallback');
+          setShowSearchError(false);
+        } else {
+          setBackendAiMode(null);
+          setShowSearchError(true);
         }
       })
-      .catch(() => setBackendAiMode(null));
+      .catch(() => {
+        setBackendAiMode(null);
+        setShowSearchError(true);
+      });
   }, []);
 
   // Trigger search on load only if onboarding is already completed
@@ -242,6 +257,7 @@ export default function Dashboard() {
         setStructuredFilters(result.parsedRequirement);
       }
       setSelectedProperties([]);
+      setShowSearchError(false);
 
       setSearchHistory(prev => {
         const next = [searchQuery, ...prev.filter(q => q !== searchQuery)].slice(0, 10);
@@ -250,6 +266,8 @@ export default function Dashboard() {
       });
     } catch (e) {
       console.error(e);
+      setShowSearchError(true);
+      showToast('Something went wrong. Please try again.', 'error');
     } finally {
       if (seq === searchSeqRef.current) {
         setIsLoading(false);
@@ -519,6 +537,7 @@ export default function Dashboard() {
             chatMessages={chatMessages}
             onSendChatMessage={handleSendChatMessage}
             aiMode={effectiveAiMode}
+            showSearchError={showSearchError}
             overviewBuilders={overviewBuilders}
             currentSentiment={currentSentiment}
             currentTrend={currentTrend}
@@ -631,6 +650,7 @@ export default function Dashboard() {
             chatMessages={chatMessages}
             onSendChatMessage={handleSendChatMessage}
             aiMode={effectiveAiMode}
+            showSearchError={showSearchError}
             overviewBuilders={overviewBuilders}
             currentSentiment={currentSentiment}
             currentTrend={currentTrend}
@@ -641,9 +661,18 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-theme-bg text-theme-text font-sans overflow-hidden select-none relative">
+    <div className="flex h-screen min-h-0 bg-theme-bg text-theme-text font-sans overflow-hidden select-none relative">
       {/* Aceternity UI Dot Grid Background */}
       <div className="absolute inset-0 aceternity-dots aceternity-mask pointer-events-none z-0"></div>
+
+      {sidebarOpen && (
+        <button
+          type="button"
+          aria-label="Close menu overlay"
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
       
       {/* LEFT SIDEBAR SECTION */}
       <Sidebar
@@ -653,14 +682,16 @@ export default function Dashboard() {
         logout={logout}
         user={user}
         setIsConsoleOpen={setIsConsoleOpen}
+        mobileOpen={sidebarOpen}
+        onMobileClose={() => setSidebarOpen(false)}
       />
 
       {/* MAIN CONTAINER WORKSPACE */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden relative z-10">
+      <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden relative z-10">
         
         {/* Ambient glows behind modules */}
-        <div className="absolute top-10 right-20 w-96 h-96 bg-theme-accent/5 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-20 left-20 w-96 h-96 bg-theme-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute top-10 right-10 sm:right-20 w-48 sm:w-96 h-48 sm:h-96 bg-theme-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-20 left-10 sm:left-20 w-48 sm:w-96 h-48 sm:h-96 bg-theme-accent/5 rounded-full blur-3xl pointer-events-none"></div>
 
         {/* TOP HEADER SECTION */}
         <Header
@@ -670,10 +701,11 @@ export default function Dashboard() {
           logout={logout}
           setActiveTab={selectTab}
           editPersona={editPersona}
+          onMenuClick={() => setSidebarOpen(true)}
         />
 
         {/* SCROLLABLE MAIN CONTENT GRID */}
-        <main className="flex-1 overflow-y-auto p-8 space-y-6 z-10">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 xs:p-4 sm:p-6 md:p-8 space-y-4 xs:space-y-5 md:space-y-6 z-10">
           {renderTabContent()}
         </main>
       </div>

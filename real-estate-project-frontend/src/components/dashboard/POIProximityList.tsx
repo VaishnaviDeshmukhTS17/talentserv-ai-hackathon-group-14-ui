@@ -222,7 +222,7 @@ export default function POIProximityList({ property }: POIProximityListProps) {
           <div className="w-[260px] h-[260px] rounded-full border border-theme-accent animate-ping"></div>
         </div>
 
-        <svg viewBox="0 0 280 280" className="w-64 h-64 relative z-10 select-none">
+        <svg viewBox="0 0 280 280" className="w-full max-w-64 h-auto aspect-square relative z-10 select-none mx-auto">
           {/* Radar Circles */}
           <circle cx={center} cy={center} r={125} fill="none" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="1" />
           <circle cx={center} cy={center} r={75} fill="none" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="1" />

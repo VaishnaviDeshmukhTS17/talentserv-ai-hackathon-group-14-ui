@@ -107,7 +107,7 @@ export default function VastuCompassWidget({ property }: VastuCompassWidgetProps
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-5 glass-panel rounded-xl animate-in fade-in duration-300">
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 xs:gap-5 md:gap-6 p-4 xs:p-5 glass-panel rounded-xl animate-in fade-in duration-300">
       
       {/* Col 1: Compass Display (lg: 5 cols) */}
       <div className="lg:col-span-5 flex flex-col items-center justify-center p-4 border border-theme-border rounded-lg bg-theme-input/30 relative">

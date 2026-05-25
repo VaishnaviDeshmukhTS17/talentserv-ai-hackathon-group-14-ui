@@ -75,7 +75,7 @@ export default function ComparisonsTab({
         </div>
       </div>
 
-      <div className="aceternity-card p-6 rounded-2xl overflow-x-auto">
+      <div className="aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-theme-border">

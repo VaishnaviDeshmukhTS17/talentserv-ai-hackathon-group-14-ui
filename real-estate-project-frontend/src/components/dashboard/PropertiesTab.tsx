@@ -240,7 +240,7 @@ export default function PropertiesTab({
               The pipeline will automatically apply normalizations and verify duplicate profiles.
             </p>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Drag and Drop Zone */}
               <div 
                 className={`border-2 border-dashed rounded-xl p-6 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-2 ${
@@ -398,7 +398,7 @@ export default function PropertiesTab({
           <span className="text-xs text-theme-text-muted font-mono font-medium">Re-calculating comparative parameters...</span>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 xs:gap-5 md:gap-6">
           {sortedProps.map((prop) => {
             if (prop.is_incomplete) return null;
             const isSelected = !!selectedProperties.find(p => p.property_id === prop.property_id);
@@ -468,7 +468,7 @@ export default function PropertiesTab({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 py-2 border-y border-theme-border/20 text-center font-mono">
+                  <div className="grid grid-cols-3 gap-1.5 xs:gap-2 py-2 border-y border-theme-border/20 text-center font-mono">
                     <div>
                       <span className="text-[9px] uppercase tracking-wider text-theme-text-muted block">Budget</span>
                       <span className="text-xs font-bold text-theme-text-light">
@@ -495,7 +495,7 @@ export default function PropertiesTab({
                   {prop.location_scores && (
                     <div className="pt-2.5 pb-1 border-t border-theme-border/10 space-y-2">
                       <div className="text-[10px] uppercase font-bold text-theme-text-muted font-mono tracking-wider">Location Quality Matrix</div>
-                      <div className="grid grid-cols-4 gap-2 text-center font-mono">
+                      <div className="grid grid-cols-2 xs:grid-cols-4 gap-1.5 xs:gap-2 text-center font-mono">
                         <div className="bg-black/20 p-1.5 rounded-lg border border-theme-border/20">
                           <span className="text-[8px] text-theme-text-muted block">Commute</span>
                           <span className="text-xs font-bold text-theme-text-light">{prop.location_scores.connectivity}%</span>
@@ -594,7 +594,7 @@ export default function PropertiesTab({
             );
           })}
           {sortedProps.length === 0 && (
-            <div className="col-span-2 text-center py-20 bg-theme-card border border-theme-border rounded-2xl font-mono text-xs text-theme-text-muted font-medium">
+            <div className="col-span-full text-center py-20 bg-theme-card border border-theme-border rounded-2xl font-mono text-xs text-theme-text-muted font-medium">
               No comparative listings found matching active filter toolbar settings.
             </div>
           )}

@@ -47,8 +47,8 @@ export default function TrendsTab({
         <p className="text-sm text-theme-text-muted mt-0.5">Appreciation histories and social sentiment clouds for active locality: {currentLocality}</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
-        <div className="aceternity-card p-6 rounded-2xl space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 xs:gap-5 md:gap-6">
+        <div className="aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl space-y-4">
           <div>
             <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-theme-accent" />
@@ -83,7 +83,7 @@ export default function TrendsTab({
           </div>
         </div>
 
-        <div className="aceternity-card p-6 rounded-2xl space-y-4">
+        <div className="aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl space-y-4">
           <div>
             <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono flex items-center gap-2">
               <ThumbsUp className="w-4 h-4 text-theme-accent" />
@@ -164,7 +164,7 @@ export default function TrendsTab({
         </div>
       </div>
 
-      <div className="aceternity-card p-6 rounded-2xl space-y-3">
+      <div className="aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl space-y-3">
         <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono">Locality Commentary Summary</h3>
         <p className="text-sm leading-relaxed text-theme-text-muted">
           {sentimentInfo.sentiment_summary || "No sentiment overview compiled for target micro-market."}

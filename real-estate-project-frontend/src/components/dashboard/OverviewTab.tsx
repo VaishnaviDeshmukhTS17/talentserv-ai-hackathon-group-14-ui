@@ -36,6 +36,7 @@ interface OverviewTabProps {
   chatMessages: { role: 'user' | 'assistant'; content: string }[];
   onSendChatMessage: (text: string) => Promise<void>;
   aiMode?: 'openai' | 'fallback' | null;
+  showSearchError?: boolean;
   overviewBuilders: BuilderReputation[];
   currentSentiment: LocalitySentiment | null;
   currentTrend: LocalityTrend | null;
@@ -59,6 +60,7 @@ export default function OverviewTab(props: OverviewTabProps) {
     chatMessages,
     onSendChatMessage,
     aiMode,
+    showSearchError,
     overviewBuilders,
     currentSentiment,
     currentTrend,
@@ -123,12 +125,18 @@ export default function OverviewTab(props: OverviewTabProps) {
 
   return (
     <>
+      {showSearchError && (
+        <div className="mb-4 p-4 rounded-xl border border-red-800/50 bg-red-950/30 flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-red-400 shrink-0" />
+          <p className="text-sm text-red-200">Something went wrong. Please try again in a moment.</p>
+        </div>
+      )}
       {/* ROW 1: Search requirements card & stats summary cards */}
-      <div className="grid grid-cols-12 gap-6 items-stretch">
+      <div className="grid grid-cols-1 gap-4 xs:gap-5 md:grid-cols-12 md:gap-6 items-stretch">
         
           {/* Card 1: Conversational Search Chat Card */}
-          <div className="col-span-8 aceternity-card p-6 rounded-2xl flex flex-col justify-between relative min-h-[360px]">
-            <div className="flex justify-between items-center mb-4 border-b border-theme-border/30 pb-3">
+          <div className="col-span-1 md:col-span-12 lg:col-span-8 aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl flex flex-col justify-between relative min-h-[280px] xs:min-h-[320px] md:min-h-[360px]">
+            <div className="flex flex-wrap justify-between items-center gap-2 mb-4 border-b border-theme-border/30 pb-3">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-theme-accent" />
                 <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono">Conversational AI Assistant</h3>
@@ -305,7 +313,7 @@ export default function OverviewTab(props: OverviewTabProps) {
         </div>
 
         {/* Card 2: Quick Summary metrics card grid */}
-        <div className="col-span-4 grid grid-cols-2 gap-4">
+        <div className="col-span-1 md:col-span-12 lg:col-span-4 grid grid-cols-2 gap-3 xs:gap-4">
           <div className="aceternity-card p-4 rounded-xl flex flex-col justify-between">
             <div className="flex justify-between items-start">
               <span className="text-xs uppercase font-bold text-theme-text-muted font-mono tracking-wider">Matches</span>
@@ -369,12 +377,12 @@ export default function OverviewTab(props: OverviewTabProps) {
       </div>
 
       {/* ROW 2: Matched Properties Table & price trend bar charts */}
-      <div className="grid grid-cols-12 gap-6 items-stretch">
+      <div className="grid grid-cols-1 gap-4 xs:gap-5 md:grid-cols-12 md:gap-6 items-stretch">
         
         {/* MATCHING PROPERTIES LISTINGS TABLE */}
-        <div className="col-span-8 aceternity-card p-6 rounded-2xl flex flex-col justify-between">
+        <div className="col-span-1 md:col-span-12 lg:col-span-8 aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl flex flex-col justify-between min-w-0">
           <div>
-            <div className="flex justify-between items-center mb-5">
+            <div className="flex flex-col xs:flex-row xs:justify-between xs:items-center gap-3 mb-5">
               <div>
                 <h3 className="text-base font-bold text-theme-text-light tracking-tight">Top Matching Properties</h3>
                 <p className="text-xs text-theme-text-muted mt-0.5 font-mono font-medium">Filtered & cleaned data records in database</p>
@@ -412,15 +420,15 @@ export default function OverviewTab(props: OverviewTabProps) {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-theme-border text-xs uppercase text-theme-text-muted font-mono font-bold">
-                      <th className="py-3 px-3 w-[5%]"></th>
-                      <th className="py-3 px-3 w-[35%]">Property</th>
-                      <th className="py-3 px-3">Locality</th>
-                      <th className="py-3 px-3 text-right">Price</th>
-                      <th className="py-3 px-3 text-right">Area (sq.ft)</th>
-                      <th className="py-3 px-3 text-right">Price/Sq.ft</th>
-                      <th className="py-3 px-3 text-right">Status</th>
-                      <th className="py-3 px-3 text-center w-[8%]">Map</th>
-                      <th className="py-3 px-3 text-center w-[8%]">Vastu</th>
+                      <th className="py-3 px-2 xs:px-3 w-[5%]"></th>
+                      <th className="py-3 px-2 xs:px-3 min-w-[140px]">Property</th>
+                      <th className="py-3 px-2 xs:px-3 hidden sm:table-cell">Locality</th>
+                      <th className="py-3 px-2 xs:px-3 text-right">Price</th>
+                      <th className="py-3 px-2 xs:px-3 text-right hidden md:table-cell">Area (sq.ft)</th>
+                      <th className="py-3 px-2 xs:px-3 text-right hidden lg:table-cell">Price/Sq.ft</th>
+                      <th className="py-3 px-2 xs:px-3 text-right hidden xs:table-cell">Status</th>
+                      <th className="py-3 px-2 xs:px-3 text-center w-[8%] hidden sm:table-cell">Map</th>
+                      <th className="py-3 px-2 xs:px-3 text-center w-[8%] hidden sm:table-cell">Vastu</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-theme-border/20">
@@ -438,7 +446,7 @@ export default function OverviewTab(props: OverviewTabProps) {
                               isSelected ? 'bg-theme-accent-muted' : ''
                             }`}
                           >
-                            <td className="py-3.5 px-3">
+                            <td className="py-3.5 px-2 xs:px-3">
                               <input
                                 type="checkbox"
                                 checked={isSelected}
@@ -447,9 +455,9 @@ export default function OverviewTab(props: OverviewTabProps) {
                                 onClick={(e) => e.stopPropagation()} // keep row click from double toggling checkbox
                               />
                             </td>
-                            <td className="py-3.5 px-3 font-semibold text-theme-text-light">
-                              <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-theme-card border border-theme-border flex items-center justify-center text-theme-text-muted group-hover:border-theme-accent-border group-hover:text-theme-text-light transition-all flex-shrink-0">
+                            <td className="py-3.5 px-2 xs:px-3 font-semibold text-theme-text-light">
+                              <div className="flex items-center gap-2 xs:gap-3">
+                                <div className="w-7 h-7 xs:w-8 xs:h-8 rounded-lg bg-theme-card border border-theme-border flex items-center justify-center text-theme-text-muted group-hover:border-theme-accent-border group-hover:text-theme-text-light transition-all flex-shrink-0">
                                   <Building2 className="w-4 h-4" />
                                 </div>
                                 <div className="min-w-0">
@@ -460,16 +468,16 @@ export default function OverviewTab(props: OverviewTabProps) {
                                 </div>
                               </div>
                             </td>
-                            <td className="py-3.5 px-3 text-theme-text-muted font-mono">{prop.locality}</td>
-                            <td className="py-3.5 px-3 text-right font-semibold text-theme-text-light font-mono">
+                            <td className="py-3.5 px-2 xs:px-3 text-theme-text-muted font-mono hidden sm:table-cell">{prop.locality}</td>
+                            <td className="py-3.5 px-2 xs:px-3 text-right font-semibold text-theme-text-light font-mono whitespace-nowrap">
                               {prop.transaction_type === 'Rent'
                                 ? `₹${prop.price.toLocaleString()} / mo`
                                 : `₹${(prop.price / 100000).toFixed(1)} L`
                               }
                             </td>
-                            <td className="py-3.5 px-3 text-right text-theme-text-muted font-mono">{prop.area_sqft}</td>
-                            <td className="py-3.5 px-3 text-right text-theme-text-muted font-mono font-semibold">₹{prop.price_per_sqft.toLocaleString()}</td>
-                            <td className="py-3 px-3 text-right">
+                            <td className="py-3.5 px-2 xs:px-3 text-right text-theme-text-muted font-mono hidden md:table-cell">{prop.area_sqft}</td>
+                            <td className="py-3.5 px-2 xs:px-3 text-right text-theme-text-muted font-mono font-semibold hidden lg:table-cell">₹{prop.price_per_sqft.toLocaleString()}</td>
+                            <td className="py-3 px-2 xs:px-3 text-right hidden xs:table-cell">
                               <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-mono ${
                                 prop.status.includes('Ready')
                                   ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-900/30'
@@ -478,7 +486,7 @@ export default function OverviewTab(props: OverviewTabProps) {
                                 {prop.status}
                               </span>
                             </td>
-                            <td className="py-3 px-3 text-center" onClick={(e) => e.stopPropagation()}>
+                            <td className="py-3 px-2 xs:px-3 text-center hidden sm:table-cell" onClick={(e) => e.stopPropagation()}>
                               <button
                                 onClick={() => {
                                   setExpandedPropId(isExpanded ? null : prop.property_id);
@@ -494,7 +502,7 @@ export default function OverviewTab(props: OverviewTabProps) {
                                 <Compass className="w-3.5 h-3.5" />
                               </button>
                             </td>
-                            <td className="py-3 px-3 text-center" onClick={(e) => e.stopPropagation()}>
+                            <td className="py-3 px-2 xs:px-3 text-center hidden sm:table-cell" onClick={(e) => e.stopPropagation()}>
                               <button
                                 onClick={() => {
                                   setExpandedVastuPropId(isVastuExpanded ? null : prop.property_id);
@@ -570,12 +578,12 @@ export default function OverviewTab(props: OverviewTabProps) {
         </div>
 
         {/* RECHARTS PRICE TREND BAR CHART */}
-        <div className="col-span-4 aceternity-card p-6 rounded-2xl flex flex-col justify-between">
+        <div className="col-span-1 md:col-span-12 lg:col-span-4 aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl flex flex-col justify-between min-w-0">
           <div>
-            <h3 className="text-base font-bold text-theme-text-light mb-1 tracking-tight">Price Trend</h3>
-            <p className="text-xs text-theme-text-muted font-mono mb-6 font-medium">Price per sq.ft. comparison across key localities</p>
+            <h3 className="text-sm md:text-base font-bold text-theme-text-light mb-1 tracking-tight">Price Trend</h3>
+            <p className="text-xs text-theme-text-muted font-mono mb-4 md:mb-6 font-medium">Price per sq.ft. comparison across key localities</p>
 
-            <div className="h-56 w-full text-xs font-mono">
+            <div className="h-44 xs:h-52 md:h-56 w-full min-w-0 text-xs font-mono">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} margin={{ top: 10, right: 0, left: -25, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--theme-border)" vertical={false} />
@@ -607,10 +615,10 @@ export default function OverviewTab(props: OverviewTabProps) {
       </div>
 
       {/* ROW 3: Builder Reputation, Sentiment donut, and Recommendations list */}
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-4 xs:gap-5 md:gap-6">
         
         {/* CARD 1: BUILDER REPUTATION COLUMN */}
-        <div className="aceternity-card p-6 rounded-2xl flex flex-col justify-between">
+        <div className="aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl flex flex-col justify-between min-w-0">
           <div>
             <div className="flex justify-between items-center mb-5">
               <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono">Builder Reputation</h3>
@@ -641,7 +649,7 @@ export default function OverviewTab(props: OverviewTabProps) {
         </div>
 
         {/* CARD 2: SENTIMENT ANALYSIS DONUT CHART */}
-        <div className="aceternity-card p-6 rounded-2xl flex flex-col justify-between">
+        <div className="aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl flex flex-col justify-between min-w-0">
           <div>
             <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono mb-4">Sentiment Summary</h3>
 
@@ -720,7 +728,7 @@ export default function OverviewTab(props: OverviewTabProps) {
         </div>
 
         {/* CARD 3: TOP RECOMMENDATIONS LIST */}
-        <div className="aceternity-card p-6 rounded-2xl flex flex-col justify-between">
+        <div className="aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl flex flex-col justify-between min-w-0 xs:col-span-2 lg:col-span-1">
           <div>
             <div className="flex justify-between items-center mb-5">
               <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono">Top Recommendations</h3>

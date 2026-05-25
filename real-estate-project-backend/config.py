@@ -11,10 +11,15 @@ class Settings(BaseSettings):
     openai_api_key: str = ""
     openai_model: str = "gpt-4o-mini"
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
+    use_local_seed: bool = False
 
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+
+    @property
+    def prefer_local_seed(self) -> bool:
+        return self.use_local_seed
 
     @property
     def openai_configured(self) -> bool:

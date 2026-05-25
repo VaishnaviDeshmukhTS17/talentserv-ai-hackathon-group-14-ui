@@ -31,9 +31,9 @@ export default function RequirementsTab({
         <p className="text-sm text-theme-text-muted mt-0.5">Inspect parsed search requirements and apply manual scoring overrides</p>
       </div>
 
-      <div className="grid grid-cols-12 gap-6 items-stretch">
+      <div className="grid grid-cols-1 gap-4 xs:gap-5 md:grid-cols-12 md:gap-6 items-stretch">
         {/* Overrides Form */}
-        <div className="col-span-8 aceternity-card p-6 rounded-2xl space-y-6">
+        <div className="col-span-1 md:col-span-12 lg:col-span-8 aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl space-y-6">
           <div className="flex justify-between items-center border-b border-theme-border/50 pb-3">
             <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono flex items-center gap-2">
               <Sliders className="w-4 h-4 text-theme-accent" />
@@ -50,7 +50,7 @@ export default function RequirementsTab({
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 xs:gap-6">
             {/* City Selection */}
             <div className="space-y-2">
               <label className="block text-xs font-mono font-bold text-theme-text-muted uppercase tracking-wider">City</label>
@@ -224,7 +224,7 @@ export default function RequirementsTab({
         </div>
 
         {/* Search History Panel */}
-        <div className="col-span-4 aceternity-card p-6 rounded-2xl flex flex-col justify-between">
+        <div className="col-span-1 md:col-span-12 lg:col-span-4 aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl flex flex-col justify-between">
           <div className="flex-1 space-y-4">
             <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono flex items-center gap-2 border-b border-theme-border/50 pb-3">
               <BookOpen className="w-4 h-4 text-theme-accent" />

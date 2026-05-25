@@ -1,0 +1,170 @@
+[
+  {
+    "locality_name": "Hinjewadi",
+    "sentiment_score": 0.76,
+    "positive_themes": [
+      "Proximity to Major IT Hubs",
+      "Upcoming Metro connectivity",
+      "High rental demand"
+    ],
+    "negative_themes": [
+      "Severe peak hour traffic congestion",
+      "Water supply dependency on tankers",
+      "High pollution levels"
+    ],
+    "comment_count": 520,
+    "sentiment_summary": "An exceptional location for professionals working in Rajiv Gandhi Infotech Park. Proximity to work is the main selling point, though buyers should expect severe traffic bottlenecks at Shivaji Chowk and water supply issues in smaller standalone societies."
+  },
+  {
+    "locality_name": "Wakad",
+    "sentiment_score": 0.84,
+    "positive_themes": [
+      "Excellent road connectivity to Expressway",
+      "Vibrant retail markets",
+      "Top international schools"
+    ],
+    "negative_themes": [
+      "High density construction",
+      "Occasional drainage overflows in monsoon"
+    ],
+    "comment_count": 310,
+    "sentiment_summary": "Very balanced residential suburb. Perfect for families due to immediate access to schools, hospital corridors, and dining options. Connectivity to Hinjewadi IT Park and Mumbai-Pune highway is excellent."
+  },
+  {
+    "locality_name": "Baner",
+    "sentiment_score": 0.9,
+    "positive_themes": [
+      "Premium residential profile",
+      "High street shopping & restaurants",
+      "Proximity to Balewadi High Street"
+    ],
+    "negative_themes": [
+      "Extremely high land prices",
+      "High cost of living"
+    ],
+    "comment_count": 240,
+    "sentiment_summary": "One of Pune's most posh suburbs. Excellent lifestyle index with premium dining, cafes, and parks. Highly attractive for high-net-worth individuals and senior executives."
+  },
+  {
+    "locality_name": "Whitefield",
+    "sentiment_score": 0.81,
+    "positive_themes": [
+      "Strong metro network access",
+      "Top IT parks like ITPL",
+      "Premium gated community culture"
+    ],
+    "negative_themes": [
+      "Water logging during heavy rains",
+      "High dust levels due to constant metro expansions"
+    ],
+    "comment_count": 680,
+    "sentiment_summary": "The ultimate tech-corridor in East Bangalore. Features beautiful massive townships with top-tier amenities. Metro routes have drastically cut down travel times to central Bangalore, but water shortages and road dust remain notable challenges."
+  },
+  {
+    "locality_name": "Indiranagar",
+    "sentiment_score": 0.88,
+    "positive_themes": [
+      "Elite high-street retail & nightlife",
+      "Central leafy avenues",
+      "Excellent connectivity"
+    ],
+    "negative_themes": [
+      "Commercialization of residential blocks",
+      "High noise levels on weekend nights",
+      "Extremely expensive property rates"
+    ],
+    "comment_count": 190,
+    "sentiment_summary": "Indiranagar is highly sought after for its cosmopolitan lifestyle, mature tree-lined avenues, and central location. Finding new, affordable residential apartments is virtually impossible, pushing transactions towards premium resales and rentals."
+  },
+  {
+    "locality_name": "Hadapsar",
+    "sentiment_score": 0.82,
+    "positive_themes": [
+      "Proximity to Magarpatta Cybercity",
+      "SP Infocity",
+      "Integrated Townships like Amanora"
+    ],
+    "negative_themes": [
+      "Traffic bottlenecks at Hadapsar flyover",
+      "Water supply constraints in unauthorized zones"
+    ],
+    "comment_count": 340,
+    "sentiment_summary": "Hadapsar is a major commercial and IT node in East Pune. Highly preferred by tech professionals working in Magarpatta. Amanora and Eastview townships provide world-class amenities, although traffic along Solapur Road is a daily pain point."
+  },
+  {
+    "locality_name": "Koramangala",
+    "sentiment_score": 0.89,
+    "positive_themes": [
+      "Startup hub culture",
+      "Vibrant food scene",
+      "Leafy residential blocks"
+    ],
+    "negative_themes": [
+      "Prone to water logging in block 4",
+      "High commercial traffic",
+      "Extremely premium rents"
+    ],
+    "comment_count": 420,
+    "sentiment_summary": "Koramangala is one of Bangalore's most famous and mature residential-cum-commercial neighborhoods. Known for tree-lined avenues and upscale cafes, it has very strong appeal but comes with high rental costs and traffic bottlenecks."
+  },
+  {
+    "locality_name": "Kharadi",
+    "sentiment_score": 0.85,
+    "positive_themes": [
+      "Proximity to EON IT Park & World Trade Center",
+      "Well-planned road grids",
+      "Modern gated complexes"
+    ],
+    "negative_themes": [
+      "Dust pollution from ongoing construction",
+      "Peak-hour congestion at Kharadi bypass chowk"
+    ],
+    "comment_count": 460,
+    "sentiment_summary": "Kharadi is a massive IT corridor in East Pune. Highly favored by software engineers for its proximity to EON IT Park. Living indexes are premium with structured wide roads and plenty of new luxury highrises."
+  },
+  {
+    "locality_name": "Viman Nagar",
+    "sentiment_score": 0.88,
+    "positive_themes": [
+      "Premium lifestyle index",
+      "Phoenix Marketcity Mall access",
+      "Proximity to Pune Airport"
+    ],
+    "negative_themes": [
+      "High residential rental pricing",
+      "Flight landing decibel noise in select pockets"
+    ],
+    "comment_count": 380,
+    "sentiment_summary": "Viman Nagar is one of Pune's most active premium residential zones. Extremely vibrant due to Symbiosis colleges, high streets, and malls. Very popular for rental investments and executive homes."
+  },
+  {
+    "locality_name": "Kothrud",
+    "sentiment_score": 0.91,
+    "positive_themes": [
+      "Traditional residential environment",
+      "Abundant tree cover & parks",
+      "Excellent schools and healthcare"
+    ],
+    "negative_themes": [
+      "Lack of new vacant land parcels",
+      "Narrow inner roads in older sectors"
+    ],
+    "comment_count": 290,
+    "sentiment_summary": "Kothrud has a very high quality of life rating. Highly mature with multi-generation local families. Very safe, green, and highly desirable, though new residential inventory is very scarce."
+  },
+  {
+    "locality_name": "Kalyani Nagar",
+    "sentiment_score": 0.89,
+    "positive_themes": [
+      "Elite neighborhood profile",
+      "Quiet tree-lined residential lanes",
+      "Proximity to Koregaon Park & tech parks"
+    ],
+    "negative_themes": [
+      "High entry price thresholds",
+      "Strict zoning rules on new construction heights"
+    ],
+    "comment_count": 220,
+    "sentiment_summary": "One of Pune's most affluent zip codes. Known for beautiful low-density luxury structures and mature trees. Residents enjoy access to prime dining corridors and high street retail without the commercial noise of central Pune."
+  }
+]

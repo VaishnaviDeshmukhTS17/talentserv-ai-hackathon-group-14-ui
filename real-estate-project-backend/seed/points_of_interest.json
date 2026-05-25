@@ -1,0 +1,186 @@
+[
+  {
+    "poi_id": "POI_HJ_001",
+    "name": "Hinjewadi Phase 1 Metro Station",
+    "type": "commute",
+    "latitude": 18.5932,
+    "longitude": 73.742,
+    "locality": "Hinjewadi"
+  },
+  {
+    "poi_id": "POI_HJ_002",
+    "name": "Rajiv Gandhi Infotech Park Phase 1",
+    "type": "commute",
+    "latitude": 18.591,
+    "longitude": 73.738,
+    "locality": "Hinjewadi"
+  },
+  {
+    "poi_id": "POI_HJ_003",
+    "name": "Blue Ridge Public School",
+    "type": "school",
+    "latitude": 18.5862,
+    "longitude": 73.7348,
+    "locality": "Hinjewadi"
+  },
+  {
+    "poi_id": "POI_HJ_004",
+    "name": "Grand Highstreet Mall",
+    "type": "lifestyle",
+    "latitude": 18.5902,
+    "longitude": 73.7456,
+    "locality": "Hinjewadi"
+  },
+  {
+    "poi_id": "POI_HJ_005",
+    "name": "Ruby Hall Clinic Hinjewadi",
+    "type": "infrastructure",
+    "latitude": 18.5954,
+    "longitude": 73.7402,
+    "locality": "Hinjewadi"
+  },
+  {
+    "poi_id": "POI_WK_001",
+    "name": "Wakad Chowk Metro Station",
+    "type": "commute",
+    "latitude": 18.5991,
+    "longitude": 73.7712,
+    "locality": "Wakad"
+  },
+  {
+    "poi_id": "POI_WK_002",
+    "name": "EuroSchool Wakad",
+    "type": "school",
+    "latitude": 18.5942,
+    "longitude": 73.765,
+    "locality": "Wakad"
+  },
+  {
+    "poi_id": "POI_WK_003",
+    "name": "Phoenix Marketcity Wakad",
+    "type": "lifestyle",
+    "latitude": 18.6002,
+    "longitude": 73.7788,
+    "locality": "Wakad"
+  },
+  {
+    "poi_id": "POI_WK_004",
+    "name": "Lifepoint Multispecialty Hospital",
+    "type": "infrastructure",
+    "latitude": 18.5972,
+    "longitude": 73.769,
+    "locality": "Wakad"
+  },
+  {
+    "poi_id": "POI_BN_001",
+    "name": "Balewadi High Street",
+    "type": "lifestyle",
+    "latitude": 18.5582,
+    "longitude": 73.7745,
+    "locality": "Baner"
+  },
+  {
+    "poi_id": "POI_BN_002",
+    "name": "The Orchid School Baner",
+    "type": "school",
+    "latitude": 18.562,
+    "longitude": 73.782,
+    "locality": "Baner"
+  },
+  {
+    "poi_id": "POI_BN_003",
+    "name": "Manipal Hospital Baner",
+    "type": "infrastructure",
+    "latitude": 18.5545,
+    "longitude": 73.7801,
+    "locality": "Baner"
+  },
+  {
+    "poi_id": "POI_KH_001",
+    "name": "EON Free Zone IT Park",
+    "type": "commute",
+    "latitude": 18.5489,
+    "longitude": 73.949,
+    "locality": "Kharadi"
+  },
+  {
+    "poi_id": "POI_KH_002",
+    "name": "World Trade Center Kharadi",
+    "type": "commute",
+    "latitude": 18.546,
+    "longitude": 73.943,
+    "locality": "Kharadi"
+  },
+  {
+    "poi_id": "POI_KH_003",
+    "name": "Radisson Blu Kharadi",
+    "type": "lifestyle",
+    "latitude": 18.543,
+    "longitude": 73.9312,
+    "locality": "Kharadi"
+  },
+  {
+    "poi_id": "POI_KH_004",
+    "name": "Columbia Asia Hospital Kharadi",
+    "type": "infrastructure",
+    "latitude": 18.5501,
+    "longitude": 73.9388,
+    "locality": "Kharadi"
+  },
+  {
+    "poi_id": "POI_WF_001",
+    "name": "ITPL Metro Station",
+    "type": "commute",
+    "latitude": 12.984,
+    "longitude": 77.7345,
+    "locality": "Whitefield"
+  },
+  {
+    "poi_id": "POI_WF_002",
+    "name": "International Tech Park Bangalore (ITPL)",
+    "type": "commute",
+    "latitude": 12.9868,
+    "longitude": 77.7378,
+    "locality": "Whitefield"
+  },
+  {
+    "poi_id": "POI_WF_003",
+    "name": "Vydehi Institute of Medical Sciences",
+    "type": "infrastructure",
+    "latitude": 12.9754,
+    "longitude": 77.729,
+    "locality": "Whitefield"
+  },
+  {
+    "poi_id": "POI_WF_004",
+    "name": "The Forum Value Mall",
+    "type": "lifestyle",
+    "latitude": 12.9592,
+    "longitude": 77.747,
+    "locality": "Whitefield"
+  },
+  {
+    "poi_id": "POI_IN_001",
+    "name": "Indiranagar Metro Station",
+    "type": "commute",
+    "latitude": 12.9783,
+    "longitude": 77.6405,
+    "locality": "Indiranagar"
+  },
+  {
+    "poi_id": "POI_IN_002",
+    "name": "100 Feet Road Food & Brewery Hub",
+    "type": "lifestyle",
+    "latitude": 12.972,
+    "longitude": 77.6415,
+    "locality": "Indiranagar"
+  },
+  {
+    "poi_id": "POI_IN_003",
+    "name": "Chinmaya Mission Hospital (CMH)",
+    "type": "infrastructure",
+    "latitude": 12.9802,
+    "longitude": 77.638,
+    "locality": "Indiranagar"
+  }
+]

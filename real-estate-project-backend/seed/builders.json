@@ -1,0 +1,194 @@
+[
+  {
+    "builder_name": "ABC Developers",
+    "reputation_score": 4.4,
+    "completion_track_record": "94% on-time delivery across 12 projects",
+    "review_summary": "Widely praised for solid layout designs and robust RCC frame structures. Minor complaints regarding delayed club-house handovers.",
+    "known_risks": [
+      "Strict maintenance collection policy",
+      "Slight delays in amenity certifications"
+    ]
+  },
+  {
+    "builder_name": "XYZ Builders",
+    "reputation_score": 3.8,
+    "completion_track_record": "80% projects delivered on time; past delays in 2 massive projects",
+    "review_summary": "Highly cost-effective luxury properties. However, customer service experiences can be inconsistent during final registry.",
+    "known_risks": [
+      "High occupancy certificate delays in Pune projects",
+      "Stiff parking charges"
+    ]
+  },
+  {
+    "builder_name": "Sobha Developers",
+    "reputation_score": 4.8,
+    "completion_track_record": "98% on-time delivery across India",
+    "review_summary": "Widely considered the gold standard for internal construction quality, tiling, and premium paint finishes.",
+    "known_risks": [
+      "Command a 15-20% price premium over local market rates"
+    ]
+  },
+  {
+    "builder_name": "Prestige Group",
+    "reputation_score": 4.7,
+    "completion_track_record": "96% on-time delivery on large townships",
+    "review_summary": "Exceptional landscaping, wide open spaces, and premium clubhouse amenities. High security standards.",
+    "known_risks": [
+      "Very large societies can feel crowded",
+      "High monthly maintenance fees"
+    ]
+  },
+  {
+    "builder_name": "Rohan Builders",
+    "reputation_score": 4.2,
+    "completion_track_record": "91% on-time delivery",
+    "review_summary": "Highly acclaimed for 'PLUS' homes (Perfect ventilation, Lively light, Utmost privacy, Smart space design). Excellent customer service.",
+    "known_risks": [
+      "Higher loading factors on built-up area"
+    ]
+  },
+  {
+    "builder_name": "Pride Group",
+    "reputation_score": 4,
+    "completion_track_record": "88% on-time delivery",
+    "review_summary": "Affordable housing options in emerging markets. Adequate basic amenities.",
+    "known_risks": [
+      "Moderate quality of internal paint/fittings"
+    ]
+  },
+  {
+    "builder_name": "Godrej Properties",
+    "reputation_score": 4.6,
+    "completion_track_record": "95% projects delivered on time globally",
+    "review_summary": "Excellent green landscaping, corporate management standards, highly professional service, and high resale premiums.",
+    "known_risks": [
+      "Strict terms on modification delays",
+      "High price per sqft compared to local developers"
+    ]
+  },
+  {
+    "builder_name": "Kolte Patil",
+    "reputation_score": 4.1,
+    "completion_track_record": "92% projects delivered on time in Pune",
+    "review_summary": "One of Pune's most trusted brands. Known for massive integrated townships (Life Republic). Sound structures, good design layouts.",
+    "known_risks": [
+      "Higher density of units in towers",
+      "High club membership fees"
+    ]
+  },
+  {
+    "builder_name": "VTP Realty",
+    "reputation_score": 3.9,
+    "completion_track_record": "87% project completion rates",
+    "review_summary": "Aggressive construction speeds, large-scale projects, and modern modular designs. Popular in Eastern and Western Pune gates.",
+    "known_risks": [
+      "Minor trim/fit finishing issues on delivery",
+      "Heavy sales traffic may lead to delay in support responses"
+    ]
+  },
+  {
+    "builder_name": "Kumar Properties",
+    "reputation_score": 4.3,
+    "completion_track_record": "93% project delivery over 40+ years",
+    "review_summary": "Excellent construction reliability and prime location acquisitions inside main Pune city limits. High brand loyalty.",
+    "known_risks": [
+      "Minimal customizations allowed in layouts",
+      "High registry fees"
+    ]
+  },
+  {
+    "builder_name": "Goyal Properties",
+    "reputation_score": 4.2,
+    "completion_track_record": "90% on-time delivery across Baner and Wakad",
+    "review_summary": "Solid local Pune brand known for spacious apartments and good design spacing. Highly responsive support team.",
+    "known_risks": [
+      "Higher society maintenance deposits during handover"
+    ]
+  },
+  {
+    "builder_name": "Gera Developments",
+    "reputation_score": 4.5,
+    "completion_track_record": "96% project completion; introduces Gera 7-year warranty",
+    "review_summary": "Widely praised for child-centric home concepts, smart home integrations, and excellent design aesthetics.",
+    "known_risks": [
+      "Limited options in mid-budget ranges"
+    ]
+  },
+  {
+    "builder_name": "Shapoorji Pallonji",
+    "reputation_score": 4.8,
+    "completion_track_record": "98% on-time completion on massive township projects",
+    "review_summary": "Industry leader in structural integrity, premium amenities, high-speed elevators, and excellent green coverage.",
+    "known_risks": [
+      "Registry and documentation delays due to complex corporate processes"
+    ]
+  },
+  {
+    "builder_name": "Kasturi Builders",
+    "reputation_score": 4.7,
+    "completion_track_record": "97% on-time execution of ultra-luxury segment",
+    "review_summary": "Acclaimed for bespoke architectural facades, international interior fittings, and high privacy spacing.",
+    "known_risks": [
+      "High entry-level price barrier",
+      "Extremely high maintenance charges"
+    ]
+  },
+  {
+    "builder_name": "Lodha Group",
+    "reputation_score": 4.3,
+    "completion_track_record": "92% projects delivered in large residential townships",
+    "review_summary": "Famous for luxury amenities, world-class clubhouses, grand entry lobbies, and great open areas.",
+    "known_risks": [
+      "Slightly high loading percentages on built-up area"
+    ]
+  },
+  {
+    "builder_name": "L&T Realty",
+    "reputation_score": 4.6,
+    "completion_track_record": "95% on-time project completion",
+    "review_summary": "Corporate style execution, excellent structural engineering, transparent pricing, and robust fire security systems.",
+    "known_risks": [
+      "Pre-handover booking cancellations are subject to heavy penalties"
+    ]
+  },
+  {
+    "builder_name": "Tata Housing",
+    "reputation_score": 4.5,
+    "completion_track_record": "93% on-time delivery across major Indian cities",
+    "review_summary": "Excellent brand trust, premium structural engineering, high-quality finishes, and very spacious layout designs.",
+    "known_risks": [
+      "Premium pricing over local developers",
+      "Rigid payment schedule structures"
+    ]
+  },
+  {
+    "builder_name": "Mahindra Lifespaces",
+    "reputation_score": 4.4,
+    "completion_track_record": "91% on-time completion record in residential projects",
+    "review_summary": "Industry leaders in eco-friendly construction techniques and IGBC-certified green developments. Highly transparent and process-oriented.",
+    "known_risks": [
+      "Limited options in lower budget categories",
+      "Separate high maintenance deposits"
+    ]
+  },
+  {
+    "builder_name": "Puravankara Limited",
+    "reputation_score": 4.2,
+    "completion_track_record": "90% project delivery rate across South and West India",
+    "review_summary": "Highly acclaimed for signature themed residential communities. Solid build quality, durable bathroom and electrical fittings.",
+    "known_risks": [
+      "High premium markup on themed spaces",
+      "Higher monthly security fee assessments"
+    ]
+  },
+  {
+    "builder_name": "Brigade Group",
+    "reputation_score": 4.7,
+    "completion_track_record": "96% on-time township completion rate",
+    "review_summary": "Aesthetic master planning, premium materials, elite modular clubhouse structures, and excellent customer relationship management.",
+    "known_risks": [
+      "Premium pricing matching Tier-1 standard rates",
+      "Relatively high society club loading factors"
+    ]
+  }
+]

@@ -1,0 +1,266 @@
+[
+  {
+    "locality_name": "Hinjewadi",
+    "trend_score": 82,
+    "trend_direction": "up",
+    "trend_summary": "Prices have surged 12% over the last year, fueled by the accelerating construction of the Hinjewadi-Shivajinagar Metro Line 3.",
+    "quarterly_price_history": [
+      {
+        "quarter": "Q2 2025",
+        "avg_price_per_sqft": 6800
+      },
+      {
+        "quarter": "Q3 2025",
+        "avg_price_per_sqft": 7100
+      },
+      {
+        "quarter": "Q4 2025",
+        "avg_price_per_sqft": 7350
+      },
+      {
+        "quarter": "Q1 2026",
+        "avg_price_per_sqft": 7600
+      }
+    ]
+  },
+  {
+    "locality_name": "Wakad",
+    "trend_score": 78,
+    "trend_direction": "up",
+    "trend_summary": "Demand remains strong due to commercial saturated centers shifting from Pune city. Appreciating steadily at 6% annually.",
+    "quarterly_price_history": [
+      {
+        "quarter": "Q2 2025",
+        "avg_price_per_sqft": 7800
+      },
+      {
+        "quarter": "Q3 2025",
+        "avg_price_per_sqft": 7950
+      },
+      {
+        "quarter": "Q4 2025",
+        "avg_price_per_sqft": 8100
+      },
+      {
+        "quarter": "Q1 2026",
+        "avg_price_per_sqft": 8300
+      }
+    ]
+  },
+  {
+    "locality_name": "Baner",
+    "trend_score": 91,
+    "trend_direction": "up",
+    "trend_summary": "Highly resilient premium micro-market. Upward momentum driven by commercial setups on Baner road. Appreciation at 9% annually.",
+    "quarterly_price_history": [
+      {
+        "quarter": "Q2 2025",
+        "avg_price_per_sqft": 10200
+      },
+      {
+        "quarter": "Q3 2025",
+        "avg_price_per_sqft": 10400
+      },
+      {
+        "quarter": "Q4 2025",
+        "avg_price_per_sqft": 10800
+      },
+      {
+        "quarter": "Q1 2026",
+        "avg_price_per_sqft": 11200
+      }
+    ]
+  },
+  {
+    "locality_name": "Whitefield",
+    "trend_score": 85,
+    "trend_direction": "up",
+    "trend_summary": "Metro completion has sparked massive renewed interest from tenants and buyers. Prices increased 14% year-over-year.",
+    "quarterly_price_history": [
+      {
+        "quarter": "Q2 2025",
+        "avg_price_per_sqft": 8100
+      },
+      {
+        "quarter": "Q3 2025",
+        "avg_price_per_sqft": 8400
+      },
+      {
+        "quarter": "Q4 2025",
+        "avg_price_per_sqft": 8900
+      },
+      {
+        "quarter": "Q1 2026",
+        "avg_price_per_sqft": 9300
+      }
+    ]
+  },
+  {
+    "locality_name": "Indiranagar",
+    "trend_score": 65,
+    "trend_direction": "flat",
+    "trend_summary": "Property rates are already saturated due to extremely high baseline values. Rental yields are increasing while capital gains are steady at 3%.",
+    "quarterly_price_history": [
+      {
+        "quarter": "Q2 2025",
+        "avg_price_per_sqft": 15400
+      },
+      {
+        "quarter": "Q3 2025",
+        "avg_price_per_sqft": 15600
+      },
+      {
+        "quarter": "Q4 2025",
+        "avg_price_per_sqft": 15700
+      },
+      {
+        "quarter": "Q1 2026",
+        "avg_price_per_sqft": 15850
+      }
+    ]
+  },
+  {
+    "locality_name": "Hadapsar",
+    "trend_score": 84,
+    "trend_direction": "up",
+    "trend_summary": "Prices appreciated by 8.5% over the past year, driven by corporate expansions in Magarpatta and SP Infocity.",
+    "quarterly_price_history": [
+      {
+        "quarter": "Q2 2025",
+        "avg_price_per_sqft": 7100
+      },
+      {
+        "quarter": "Q3 2025",
+        "avg_price_per_sqft": 7300
+      },
+      {
+        "quarter": "Q4 2025",
+        "avg_price_per_sqft": 7550
+      },
+      {
+        "quarter": "Q1 2026",
+        "avg_price_per_sqft": 7800
+      }
+    ]
+  },
+  {
+    "locality_name": "Koramangala",
+    "trend_score": 72,
+    "trend_direction": "up",
+    "trend_summary": "Demand remains highly stable. Price changes are steady at 5% capital growth but rental rates continue to rise due to tech demand.",
+    "quarterly_price_history": [
+      {
+        "quarter": "Q2 2025",
+        "avg_price_per_sqft": 11800
+      },
+      {
+        "quarter": "Q3 2025",
+        "avg_price_per_sqft": 12000
+      },
+      {
+        "quarter": "Q4 2025",
+        "avg_price_per_sqft": 12250
+      },
+      {
+        "quarter": "Q1 2026",
+        "avg_price_per_sqft": 12500
+      }
+    ]
+  },
+  {
+    "locality_name": "Kharadi",
+    "trend_score": 87,
+    "trend_direction": "up",
+    "trend_summary": "Prices surged 11.5% due to high tech employment inflows in EON IT Park. Demand for mid-segment flats remains extremely high.",
+    "quarterly_price_history": [
+      {
+        "quarter": "Q2 2025",
+        "avg_price_per_sqft": 7900
+      },
+      {
+        "quarter": "Q3 2025",
+        "avg_price_per_sqft": 8150
+      },
+      {
+        "quarter": "Q4 2025",
+        "avg_price_per_sqft": 8400
+      },
+      {
+        "quarter": "Q1 2026",
+        "avg_price_per_sqft": 8800
+      }
+    ]
+  },
+  {
+    "locality_name": "Viman Nagar",
+    "trend_score": 80,
+    "trend_direction": "up",
+    "trend_summary": "Mature market with steady 7% capital appreciation. Rental demands outpaced sales supply, leading to high yield growth.",
+    "quarterly_price_history": [
+      {
+        "quarter": "Q2 2025",
+        "avg_price_per_sqft": 9400
+      },
+      {
+        "quarter": "Q3 2025",
+        "avg_price_per_sqft": 9600
+      },
+      {
+        "quarter": "Q4 2025",
+        "avg_price_per_sqft": 9850
+      },
+      {
+        "quarter": "Q1 2026",
+        "avg_price_per_sqft": 10100
+      }
+    ]
+  },
+  {
+    "locality_name": "Kothrud",
+    "trend_score": 75,
+    "trend_direction": "up",
+    "trend_summary": "Baseline prices are high, limiting double-digit gains. Appreciating steadily at 5.5% with premium resale listings leading the market.",
+    "quarterly_price_history": [
+      {
+        "quarter": "Q2 2025",
+        "avg_price_per_sqft": 12800
+      },
+      {
+        "quarter": "Q3 2025",
+        "avg_price_per_sqft": 13000
+      },
+      {
+        "quarter": "Q4 2025",
+        "avg_price_per_sqft": 13300
+      },
+      {
+        "quarter": "Q1 2026",
+        "avg_price_per_sqft": 13500
+      }
+    ]
+  },
+  {
+    "locality_name": "Kalyani Nagar",
+    "trend_score": 83,
+    "trend_direction": "up",
+    "trend_summary": "Elite locality experiencing premium supply crunch. Prices appreciated by 9% year-on-year, driven by ultra-luxury boutique setups.",
+    "quarterly_price_history": [
+      {
+        "quarter": "Q2 2025",
+        "avg_price_per_sqft": 13600
+      },
+      {
+        "quarter": "Q3 2025",
+        "avg_price_per_sqft": 13950
+      },
+      {
+        "quarter": "Q4 2025",
+        "avg_price_per_sqft": 14200
+      },
+      {
+        "quarter": "Q1 2026",
+        "avg_price_per_sqft": 14800
+      }
+    ]
+  }
+]

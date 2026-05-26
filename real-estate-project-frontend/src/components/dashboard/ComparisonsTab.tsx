@@ -72,6 +72,16 @@ export default function ComparisonsTab({
             <Trash2 className="w-3.5 h-3.5" />
             <span>Clear Selection</span>
           </button>
+          <button
+            onClick={() => {
+              setSelectedProperties([]);
+              setActiveTab('Properties');
+            }}
+            className="px-3 py-1.5 bg-theme-btn hover:bg-theme-btn-hover border border-theme-border text-theme-text-light text-xs font-mono font-bold rounded-lg flex items-center gap-1.5 transition-all"
+          >
+            <X className="w-3.5 h-3.5" />
+            <span>Close</span>
+          </button>
         </div>
       </div>
 

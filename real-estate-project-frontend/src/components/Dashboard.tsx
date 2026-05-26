@@ -40,18 +40,25 @@ export default function Dashboard() {
   const location = useLocation();
   const searchSeqRef = useRef(0);
   const onboardingCheckedRef = useRef(false);
+  const DEFAULT_QUERY = 'Looking for 2 BHK in Hinjewadi, Pune under 80 lakh, ready to move near IT park';
   const [query, setQuery] = useState(() => {
     try {
+      const sessionQuery = sessionStorage.getItem('propintel_session_query');
+      if (sessionQuery && sessionQuery !== 'null' && sessionQuery !== 'undefined' && sessionQuery.trim() !== '') {
+        return sessionQuery;
+      }
       const savedUser = localStorage.getItem('real_estate_user');
       if (savedUser) {
         const email = JSON.parse(savedUser)?.email;
         if (email) {
           const lastQuery = localStorage.getItem(`last_query_${email}`);
-          if (lastQuery) return lastQuery;
+          if (lastQuery && lastQuery !== 'null' && lastQuery !== 'undefined' && lastQuery.trim() !== '') {
+            return lastQuery;
+          }
         }
       }
     } catch (e) {}
-    return 'Looking for 2 BHK in Hinjewadi, Pune under 80 lakh, ready to move near IT park';
+    return DEFAULT_QUERY;
   });
   const [tempQuery, setTempQuery] = useState('');
   const [isEditingQuery, setIsEditingQuery] = useState(false);
@@ -62,10 +69,21 @@ export default function Dashboard() {
   const [showSearchError, setShowSearchError] = useState(false);
   const [selectedProperties, setSelectedProperties] = useState<CleanedProperty[]>([]);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const [isDockClosed, setIsDockClosed] = useState(false);
+  const prevSelectedLengthRef = useRef(selectedProperties.length);
+  useEffect(() => {
+    if (selectedProperties.length > prevSelectedLengthRef.current) {
+      setIsDockClosed(false);
+    }
+    prevSelectedLengthRef.current = selectedProperties.length;
+  }, [selectedProperties.length]);
   const [isConsoleOpen, setIsConsoleOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(() => readSavedDashboardTab() || 'Dashboard');
 
   const selectTab = (tab: string) => {
+    if (activeTab === 'Comparisons' && tab !== 'Comparisons') {
+      setSelectedProperties([]);
+    }
     setActiveTab(tab);
     saveDashboardTab(tab, user?.email || getSessionEmail());
     setSidebarOpen(false);
@@ -200,6 +218,7 @@ export default function Dashboard() {
     markOnboardingComplete(email);
     localStorage.setItem('user_persona', userPersona);
     setShowOnboarding(false);
+    await handleSearch(onboardingQuery);
     await handleSendChatMessage(onboardingQuery);
   };
 
@@ -228,13 +247,22 @@ export default function Dashboard() {
   // Trigger search on load only if onboarding is already completed
   useEffect(() => {
     if (user?.email) {
+      const sessionQuery = sessionStorage.getItem('propintel_session_query');
       const lastQuery = localStorage.getItem(`last_query_${user.email}`);
-      if (lastQuery) {
-        setQuery(lastQuery);
-      }
+      
+      const activeQuery = (sessionQuery && sessionQuery !== 'null' && sessionQuery !== 'undefined' && sessionQuery.trim() !== '')
+        ? sessionQuery
+        : (lastQuery && lastQuery !== 'null' && lastQuery !== 'undefined' && lastQuery.trim() !== '')
+          ? lastQuery
+          : query && query !== 'null' && query !== 'undefined' && query.trim() !== ''
+            ? query
+            : DEFAULT_QUERY;
+            
+      setQuery(activeQuery);
+      
       const completed = isOnboardingComplete(user.email);
       if (completed) {
-        handleSearch(lastQuery || query);
+        handleSearch(activeQuery);
       }
     }
   }, [user?.email]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -251,6 +279,10 @@ export default function Dashboard() {
     }
     setIsEditingQuery(false);
     setQuery(searchQuery);
+    
+    // Save to sessionStorage to preserve query across login transitions
+    sessionStorage.setItem('propintel_session_query', searchQuery);
+    
     if (user?.email) {
       localStorage.setItem(`last_query_${user.email}`, searchQuery);
     }
@@ -745,14 +777,16 @@ export default function Dashboard() {
         aiMode={effectiveAiMode}
       />
 
-      {/* Floating Drag-and-Drop Compare Dock */}
-      <CompareDock
-        selectedProperties={selectedProperties}
-        toggleSelectProperty={toggleSelectProperty}
-        setSelectedProperties={setSelectedProperties}
-        allProperties={properties}
-        onCompareClick={() => selectTab('Comparisons')}
-      />
+      {activeTab !== 'Comparisons' && !isDockClosed && (
+        <CompareDock
+          selectedProperties={selectedProperties}
+          toggleSelectProperty={toggleSelectProperty}
+          setSelectedProperties={setSelectedProperties}
+          allProperties={properties}
+          onCompareClick={() => selectTab('Comparisons')}
+          onCloseDock={() => setIsDockClosed(true)}
+        />
+      )}
 
       {/* Onboarding Welcome Wizard Overlay */}
       <OnboardingWizard

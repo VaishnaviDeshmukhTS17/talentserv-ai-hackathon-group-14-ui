@@ -514,6 +514,8 @@ function PropertyCard({
 }: PropertyCardProps) {
   const cardRef = React.useRef<HTMLDivElement | null>(null);
   const [transform, setTransform] = React.useState('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)');
+  const isDraggingRef = React.useRef(false);
+  const hasDraggedRef = React.useRef(false);
   const builder = buildersData[prop.builder_or_owner];
 
   const duplicates = prop.duplicate_group_id
@@ -527,6 +529,7 @@ function PropertyCard({
   const isCheapest = cheapestProp.property_id === prop.property_id;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isDraggingRef.current) return;
     const card = cardRef.current;
     if (!card) return;
 
@@ -567,10 +570,22 @@ function PropertyCard({
       ref={cardRef}
       draggable={true}
       onDragStart={(e) => {
+        isDraggingRef.current = true;
+        hasDraggedRef.current = true;
         e.dataTransfer.setData('text/plain', prop.property_id);
         e.dataTransfer.effectAllowed = 'copyMove';
       }}
-      onClick={() => toggleSelectProperty(prop)}
+      onDragEnd={() => {
+        isDraggingRef.current = false;
+        setTransform('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)');
+        setTimeout(() => {
+          hasDraggedRef.current = false;
+        }, 100);
+      }}
+      onClick={(e) => {
+        if (hasDraggedRef.current) return;
+        toggleSelectProperty(prop);
+      }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{

@@ -14,6 +14,7 @@ _client: AsyncOpenAI | None = None
 _explanation_cache: dict[tuple, str] = {}
 _sentiment_cache: dict[str, dict[str, Any]] = {}
 _room_explanation_cache: dict[tuple, str] = {}
+_parse_cache: dict[str, dict[str, Any]] = {}
 
 
 def get_openai_client() -> AsyncOpenAI | None:
@@ -228,6 +229,10 @@ def run_fallback_chat(messages: list[dict[str, str]]) -> dict[str, Any]:
 
 
 async def parse_query_with_ai(query: str) -> dict[str, Any] | None:
+    query_stripped = query.strip()
+    if query_stripped in _parse_cache:
+        return _parse_cache[query_stripped]
+
     system = """Extract property search parameters from natural language.
 Return JSON with the following schema:
 {
@@ -244,7 +249,9 @@ Return JSON with the following schema:
     result = await _chat_json(system, query)
     if not result:
         return None
-    return normalize_parsed_requirement(result)
+    normalized = normalize_parsed_requirement(result)
+    _parse_cache[query_stripped] = normalized
+    return normalized
 
 
 async def parse_natural_language_requirement(query: str) -> dict[str, Any]:

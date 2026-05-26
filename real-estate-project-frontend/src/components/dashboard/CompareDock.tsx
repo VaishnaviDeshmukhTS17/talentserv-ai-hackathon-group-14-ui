@@ -8,6 +8,7 @@ interface CompareDockProps {
   setSelectedProperties: React.Dispatch<React.SetStateAction<CleanedProperty[]>>;
   allProperties: CleanedProperty[];
   onCompareClick: () => void;
+  onCloseDock?: () => void;
 }
 
 export default function CompareDock({
@@ -15,7 +16,8 @@ export default function CompareDock({
   toggleSelectProperty,
   setSelectedProperties,
   allProperties,
-  onCompareClick
+  onCompareClick,
+  onCloseDock
 }: CompareDockProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -83,6 +85,15 @@ export default function CompareDock({
           : 'translate-y-28 opacity-0 pointer-events-none'
       } ${isDragOver ? 'border-theme-accent/60 bg-theme-accent-muted/20 shadow-theme-accent-muted/10' : ''}`}
     >
+      {onCloseDock && (
+        <button
+          onClick={onCloseDock}
+          className="absolute -top-2 -right-2 p-1.5 rounded-full bg-theme-card border border-theme-border text-theme-text-muted hover:text-theme-text-light transition-all cursor-pointer shadow-lg hover:scale-105 active:scale-95 z-[10000]"
+          title="Close Compare Queue"
+        >
+          <X className="w-3 h-3" />
+        </button>
+      )}
       <div className="flex flex-col gap-0.5">
         <span className="text-xs font-bold text-theme-text-light uppercase tracking-widest font-mono flex items-center gap-1.5">
           <Layers className="w-3.5 h-3.5 text-theme-accent animate-pulse" />

@@ -417,9 +417,9 @@ export default function OverviewTab(props: OverviewTabProps) {
                 <span className="text-xs text-theme-text-muted font-mono">Try a different locality, BHK, or budget in the chat.</span>
               </div>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto max-h-[390px] overflow-y-auto pr-1">
                 <table className="w-full text-left border-collapse">
-                  <thead>
+                  <thead className="sticky top-0 bg-theme-card backdrop-blur-md z-10">
                     <tr className="border-b border-theme-border text-xs uppercase text-theme-text-muted font-mono font-bold">
                       <th className="py-3 px-2 xs:px-3 w-[5%]"></th>
                       <th className="py-3 px-2 xs:px-3 min-w-[140px]">Property</th>

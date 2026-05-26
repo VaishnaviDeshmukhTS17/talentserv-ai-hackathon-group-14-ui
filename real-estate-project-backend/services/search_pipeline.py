@@ -92,27 +92,37 @@ async def execute_search(
 ) -> dict[str, Any]:
     overrides = overrides or {}
 
-    # If overrides are provided (e.g. from chat assistant or UI filters), bypass the expensive LLM query parsing
-    if overrides and len(overrides) > 0:
-        base = overrides
-    else:
+    # Bypass AI parsing only if overrides contains the parsed filters from chat/UI
+    # (i.e. overrides contains 'locality', 'bhk', 'budget_max', 'status_preference', or 'vastu_compliant_only')
+    has_parsed_filters = overrides and any(
+        k in overrides for k in ("locality", "bhk", "budget_max", "status_preference", "vastu_compliant_only")
+    )
+
+    async def get_parsed_req():
+        if has_parsed_filters:
+            return overrides
         base = await parse_query_with_ai(query)
         if not base:
             base = mock_parse_query(query)
-    parsed = normalize_parsed_requirement({**base, **overrides})
+        return base
 
-    raw_props = await fetch_all_properties(db)
+    # Fetch database collections and parse query concurrently
+    raw_props, builders_map, sentiment_map, trends_map, pois, base_parsed = await asyncio.gather(
+        fetch_all_properties(db),
+        fetch_builders_map(db),
+        fetch_sentiment_map(db),
+        fetch_trends_map(db),
+        fetch_pois(db),
+        get_parsed_req(),
+    )
+    parsed = normalize_parsed_requirement({**base_parsed, **overrides})
+
     cleaned = clean_properties_list(raw_props)
 
     async def dup_checker(a: dict[str, Any], b: dict[str, Any]) -> bool:
         return await check_if_duplicate(a, b)
 
     deduped = await deduplicate_properties(cleaned, dup_checker if settings.openai_configured else None)
-
-    builders_map = await fetch_builders_map(db)
-    sentiment_map = await fetch_sentiment_map(db)
-    trends_map = await fetch_trends_map(db)
-    pois = await fetch_pois(db)
 
     filtered = [
         p
@@ -170,6 +180,12 @@ async def execute_search(
 
     scored.sort(key=lambda p: p.get("match_score", 0), reverse=True)
 
+    loc = parsed.get("locality", "")
+    reviews = MOCK_REVIEWS.get(loc) or [
+        f"Nice residential area in {loc}.",
+        f"Road infrastructure in {loc} has improved.",
+    ]
+
     # Prepare explanation tasks for the top 3 recommendations in parallel to save time.
     explanation_tasks = []
     for idx, prop in enumerate(scored):
@@ -178,19 +194,21 @@ async def execute_search(
         else:
             explanation_tasks.append(None)
 
-    explanations = []
-    if any(task is not None for task in explanation_tasks):
-        active_tasks = [t for t in explanation_tasks if t is not None]
-        results = await asyncio.gather(*active_tasks)
-        res_idx = 0
-        for task in explanation_tasks:
-            if task is not None:
-                explanations.append(results[res_idx])
-                res_idx += 1
-            else:
-                explanations.append(None)
-    else:
-        explanations = [None] * len(scored)
+    # Gather explanations and sentiment analysis concurrently
+    explanation_indices = [i for i, t in enumerate(explanation_tasks) if t is not None]
+    active_tasks = [explanation_tasks[i] for i in explanation_indices]
+    
+    # Append the sentiment analysis task
+    sentiment_task_idx = len(active_tasks)
+    active_tasks.append(analyze_sentiment(reviews))
+
+    results = await asyncio.gather(*active_tasks)
+
+    explanations = [None] * len(scored)
+    for idx, orig_idx in enumerate(explanation_indices):
+        explanations[orig_idx] = results[idx]
+
+    dynamic = results[sentiment_task_idx]
 
     final: list[dict[str, Any]] = []
     for idx, prop in enumerate(scored):
@@ -209,23 +227,17 @@ async def execute_search(
         bname = prop.get("builder_or_owner")
         if bname and bname in builders_map:
             builders[bname] = builders_map[bname]
-        loc = prop.get("locality")
-        if loc and loc in sentiment_map:
-            sentiments[loc] = sentiment_map[loc]
-        if loc and loc in trends_map:
-            trends[loc] = trends_map[loc]
+        loc_prop = prop.get("locality")
+        if loc_prop and loc_prop in sentiment_map:
+            sentiments[loc_prop] = sentiment_map[loc_prop]
+        if loc_prop and loc_prop in trends_map:
+            trends[loc_prop] = trends_map[loc_prop]
 
-    loc = parsed.get("locality", "")
     if loc in sentiment_map:
         sentiments[loc] = sentiment_map[loc]
     if loc in trends_map:
         trends[loc] = trends_map[loc]
 
-    reviews = MOCK_REVIEWS.get(loc) or [
-        f"Nice residential area in {loc}.",
-        f"Road infrastructure in {loc} has improved.",
-    ]
-    dynamic = await analyze_sentiment(reviews)
     if dynamic:
         sentiments[loc] = {
             "locality_name": loc,

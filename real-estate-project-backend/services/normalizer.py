@@ -59,6 +59,21 @@ def normalize_locality(locality: str) -> str:
         return ""
     clean = locality.strip().lower()
 
+    localities_list = [
+        "Hinjewadi",
+        "Wakad",
+        "Baner",
+        "Hadapsar",
+        "Kharadi",
+        "Viman Nagar",
+        "Kothrud",
+        "Kalyani Nagar",
+        "Whitefield",
+        "Indiranagar",
+        "Koramangala",
+    ]
+
+    # 1. Direct spelling substring rules
     mappings = [
         (("hinja", "hinje"), "Hinjewadi"),
         (("wakad",), "Wakad"),
@@ -76,6 +91,14 @@ def normalize_locality(locality: str) -> str:
         if any(k in clean for k in keys):
             return value
 
+    # 2. Fuzzy match close spellings
+    import difflib
+    targets = {x.lower(): x for x in localities_list}
+    matches = difflib.get_close_matches(clean, list(targets.keys()), n=1, cutoff=0.5)
+    if matches:
+        return targets[matches[0]]
+
+    # 3. Fallback title case
     return " ".join(w.capitalize() for w in locality.split())
 
 
@@ -184,6 +207,46 @@ def calculate_vastu_compliance(prop: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def get_property_image_url(prop: dict[str, Any]) -> str:
+    if prop.get("image_url"):
+        return prop["image_url"]
+
+    project = str(prop.get("project_name") or "").lower()
+    title = str(prop.get("title") or "").lower()
+
+    if "green heights" in project:
+        return "/images/apt_green_heights.png"
+    if "elanza towers" in project:
+        return "/images/apt_elanza_towers.png"
+    if "rohan heights" in project or "rohan leher" in project or "rohan" in project:
+        return "/images/apt_rohan_heights.png"
+    if "goyal meadows" in project or "villa" in title:
+        return "/images/apt_goyal_meadows.png"
+    if "sobha dream" in project or "sobha" in project:
+        return "/images/apt_sobha_dream.png"
+    if "prestige lakeside" in project or "prestige" in project:
+        return "/images/apt_prestige_lakeside.png"
+
+    # Fallback map based on property_id numbers
+    prop_id = str(prop.get("property_id") or "")
+    num_match = re.search(r"\d+", prop_id)
+    id_num = int(num_match.group(0)) if num_match else 0
+    mod = id_num % 7
+    if mod == 0:
+        return "/images/apt_green_heights.png"
+    if mod == 1:
+        return "/images/apt_elanza_towers.png"
+    if mod == 2:
+        return "/images/apt_rohan_heights.png"
+    if mod == 3:
+        return "/images/apt_goyal_meadows.png"
+    if mod == 4:
+        return "/images/apt_sobha_dream.png"
+    if mod == 5:
+        return "/images/apt_prestige_lakeside.png"
+    return "/images/apt_generic.png"
+
+
 def process_property(prop: dict[str, Any]) -> dict[str, Any]:
     price = normalize_price(prop.get("price", 0))
     area_sqft = normalize_area(prop.get("area_sqft", 0))
@@ -202,6 +265,7 @@ def process_property(prop: dict[str, Any]) -> dict[str, Any]:
         "bhk": bhk,
         "price_per_sqft": price_per_sqft,
         "is_incomplete": is_incomplete,
+        "image_url": get_property_image_url(prop),
     }
     cleaned.update(calculate_vastu_compliance(prop))
     return cleaned
@@ -218,14 +282,31 @@ def normalize_parsed_requirement(req: dict[str, Any]) -> dict[str, Any]:
     tx = str(out.get("transaction_type", "Buy")).strip().lower()
     out["transaction_type"] = "Rent" if tx in ("rent", "rental", "lease", "pg") else "Buy"
 
-    city = str(out.get("city", "Pune")).strip()
-    if city.lower() in ("bangalore", "bengaluru"):
-        out["city"] = "Bangalore"
-    elif city:
-        out["city"] = city.title()
+    # Normalize locality first
+    locality = out.get("locality")
+    if locality:
+        normalized_loc = normalize_locality(str(locality))
+        out["locality"] = normalized_loc
 
-    if out.get("locality"):
-        out["locality"] = normalize_locality(str(out["locality"]))
+        # Cross-reference to deduce the correct city based on known localities
+        pune_localities = {"hinjewadi", "wakad", "baner", "hadapsar", "kharadi", "viman nagar", "kothrud", "kalyani nagar"}
+        bangalore_localities = {"whitefield", "indiranagar", "koramangala"}
+        loc_lower = normalized_loc.lower()
+        if loc_lower in pune_localities:
+            out["city"] = "Pune"
+        elif loc_lower in bangalore_localities:
+            out["city"] = "Bangalore"
+
+    city_raw = out.get("city")
+    # Treat Python None and the string "None"/"null" as absent
+    if not city_raw or str(city_raw).strip().lower() in ("none", "null", ""):
+        out["city"] = "Pune"  # sensible default
+    else:
+        city = str(city_raw).strip()
+        if city.lower() in ("bangalore", "bengaluru"):
+            out["city"] = "Bangalore"
+        else:
+            out["city"] = city.title()
 
     status = out.get("status_preference")
     if status:
@@ -247,9 +328,10 @@ def normalize_parsed_requirement(req: dict[str, Any]) -> dict[str, Any]:
             out["bhk"] = None
 
     budget = out.get("budget_max")
-    if budget is not None:
+    if budget is not None and str(budget).lower().strip() not in ("", "none", "null"):
         try:
-            out["budget_max"] = int(budget)
+            val = normalize_price(budget)
+            out["budget_max"] = val if val > 0 else None
         except (TypeError, ValueError):
             out["budget_max"] = None
 

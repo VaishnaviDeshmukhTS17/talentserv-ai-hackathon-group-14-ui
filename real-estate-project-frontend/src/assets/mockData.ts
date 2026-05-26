@@ -33,6 +33,7 @@ export interface CleanedProperty extends Omit<RawProperty, 'price' | 'area_sqft'
   bhk: number;
   price_per_sqft: number;
   is_incomplete: boolean;
+  image_url?: string;
   duplicate_group_id?: string;
   match_score?: number;
   recommendation_explanation?: string;

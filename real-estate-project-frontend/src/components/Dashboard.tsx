@@ -18,9 +18,12 @@ import PropertiesTab from './dashboard/PropertiesTab';
 import ComparisonsTab from './dashboard/ComparisonsTab';
 import BuildersTab from './dashboard/BuildersTab';
 import TrendsTab from './dashboard/TrendsTab';
+import GISHeatmap from './dashboard/GISHeatmap';
 import SavedSearchesTab from './dashboard/SavedSearchesTab';
 import SettingsTab from './dashboard/SettingsTab';
 import DataComplianceTab from './dashboard/DataComplianceTab';
+import AmbientBackground from './dashboard/AmbientBackground';
+import CompareDock from './dashboard/CompareDock';
 import { useToast } from './Toast';
 import {
   markOnboardingComplete,
@@ -37,18 +40,25 @@ export default function Dashboard() {
   const location = useLocation();
   const searchSeqRef = useRef(0);
   const onboardingCheckedRef = useRef(false);
+  const DEFAULT_QUERY = 'Looking for 2 BHK in Hinjewadi, Pune under 80 lakh, ready to move near IT park';
   const [query, setQuery] = useState(() => {
     try {
+      const sessionQuery = sessionStorage.getItem('propintel_session_query');
+      if (sessionQuery && sessionQuery !== 'null' && sessionQuery !== 'undefined' && sessionQuery.trim() !== '') {
+        return sessionQuery;
+      }
       const savedUser = localStorage.getItem('real_estate_user');
       if (savedUser) {
         const email = JSON.parse(savedUser)?.email;
         if (email) {
           const lastQuery = localStorage.getItem(`last_query_${email}`);
-          if (lastQuery) return lastQuery;
+          if (lastQuery && lastQuery !== 'null' && lastQuery !== 'undefined' && lastQuery.trim() !== '') {
+            return lastQuery;
+          }
         }
       }
     } catch (e) {}
-    return 'Looking for 2 BHK in Hinjewadi, Pune under 80 lakh, ready to move near IT park';
+    return DEFAULT_QUERY;
   });
   const [tempQuery, setTempQuery] = useState('');
   const [isEditingQuery, setIsEditingQuery] = useState(false);
@@ -59,10 +69,21 @@ export default function Dashboard() {
   const [showSearchError, setShowSearchError] = useState(false);
   const [selectedProperties, setSelectedProperties] = useState<CleanedProperty[]>([]);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const [isDockClosed, setIsDockClosed] = useState(false);
+  const prevSelectedLengthRef = useRef(selectedProperties.length);
+  useEffect(() => {
+    if (selectedProperties.length > prevSelectedLengthRef.current) {
+      setIsDockClosed(false);
+    }
+    prevSelectedLengthRef.current = selectedProperties.length;
+  }, [selectedProperties.length]);
   const [isConsoleOpen, setIsConsoleOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(() => readSavedDashboardTab() || 'Dashboard');
 
   const selectTab = (tab: string) => {
+    if (activeTab === 'Comparisons' && tab !== 'Comparisons') {
+      setSelectedProperties([]);
+    }
     setActiveTab(tab);
     saveDashboardTab(tab, user?.email || getSessionEmail());
     setSidebarOpen(false);
@@ -87,19 +108,22 @@ export default function Dashboard() {
       .join('. ');
 
     try {
-      // Step 1: Parse NL → structured filters (shown immediately in UI)
-      const parseResult = await parseRequirement(conversationQuery || text);
-      const parsed = normalizeParsedRequirement(parseResult.parsedRequirement);
-      setStructuredFilters(parsed as ParsedRequirement);
-      setManualOverrides(parsed);
-
-      // Step 2: Conversational reply
+      // Step 1: Conversational reply & parsed requirement in a single step
       const response = await chatWithAgent(updatedHistory);
       setChatMessages([...updatedHistory, { role: 'assistant', content: response.reply }]);
 
-      // Step 3: Search listings using structured filters
-      const newQueryText = buildSearchQueryFromRequirement(parsed, conversationQuery || text);
-      await handleSearch(newQueryText, parsed, { skipLoadingToggle: true });
+      let parsed = structuredFilters;
+      if (response.parsedRequirement) {
+        parsed = normalizeParsedRequirement(response.parsedRequirement) as ParsedRequirement;
+        setStructuredFilters(parsed);
+        setManualOverrides(parsed);
+      }
+
+      // Step 2: Search listings using the parsed filters
+      if (parsed) {
+        const newQueryText = buildSearchQueryFromRequirement(parsed, conversationQuery || text);
+        await handleSearch(newQueryText, parsed, { skipLoadingToggle: true });
+      }
     } catch (e) {
       console.error(e);
       setChatMessages([...updatedHistory, {
@@ -194,6 +218,7 @@ export default function Dashboard() {
     markOnboardingComplete(email);
     localStorage.setItem('user_persona', userPersona);
     setShowOnboarding(false);
+    await handleSearch(onboardingQuery);
     await handleSendChatMessage(onboardingQuery);
   };
 
@@ -222,13 +247,22 @@ export default function Dashboard() {
   // Trigger search on load only if onboarding is already completed
   useEffect(() => {
     if (user?.email) {
+      const sessionQuery = sessionStorage.getItem('propintel_session_query');
       const lastQuery = localStorage.getItem(`last_query_${user.email}`);
-      if (lastQuery) {
-        setQuery(lastQuery);
-      }
+      
+      const activeQuery = (sessionQuery && sessionQuery !== 'null' && sessionQuery !== 'undefined' && sessionQuery.trim() !== '')
+        ? sessionQuery
+        : (lastQuery && lastQuery !== 'null' && lastQuery !== 'undefined' && lastQuery.trim() !== '')
+          ? lastQuery
+          : query && query !== 'null' && query !== 'undefined' && query.trim() !== ''
+            ? query
+            : DEFAULT_QUERY;
+            
+      setQuery(activeQuery);
+      
       const completed = isOnboardingComplete(user.email);
       if (completed) {
-        handleSearch(lastQuery || query);
+        handleSearch(activeQuery);
       }
     }
   }, [user?.email]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -245,6 +279,10 @@ export default function Dashboard() {
     }
     setIsEditingQuery(false);
     setQuery(searchQuery);
+    
+    // Save to sessionStorage to preserve query across login transitions
+    sessionStorage.setItem('propintel_session_query', searchQuery);
+    
     if (user?.email) {
       localStorage.setItem(`last_query_${user.email}`, searchQuery);
     }
@@ -595,6 +633,14 @@ export default function Dashboard() {
             currentLocality={currentLocality}
           />
         );
+      case 'GIS Heatmaps':
+        return (
+          <GISHeatmap
+            properties={properties}
+            currentCity={currentCity}
+            currentLocality={currentLocality}
+          />
+        );
       case 'Saved Searches':
         return (
           <SavedSearchesTab
@@ -664,6 +710,9 @@ export default function Dashboard() {
     <div className="flex h-screen min-h-0 bg-theme-bg text-theme-text font-sans overflow-hidden select-none relative">
       {/* Aceternity UI Dot Grid Background */}
       <div className="absolute inset-0 aceternity-dots aceternity-mask pointer-events-none z-0"></div>
+      
+      {/* Ambient Magnetic Aura Canvas Background */}
+      <AmbientBackground theme={theme} />
 
       {sidebarOpen && (
         <button
@@ -727,6 +776,17 @@ export default function Dashboard() {
         properties={properties}
         aiMode={effectiveAiMode}
       />
+
+      {activeTab !== 'Comparisons' && !isDockClosed && (
+        <CompareDock
+          selectedProperties={selectedProperties}
+          toggleSelectProperty={toggleSelectProperty}
+          setSelectedProperties={setSelectedProperties}
+          allProperties={properties}
+          onCompareClick={() => selectTab('Comparisons')}
+          onCloseDock={() => setIsDockClosed(true)}
+        />
+      )}
 
       {/* Onboarding Welcome Wizard Overlay */}
       <OnboardingWizard

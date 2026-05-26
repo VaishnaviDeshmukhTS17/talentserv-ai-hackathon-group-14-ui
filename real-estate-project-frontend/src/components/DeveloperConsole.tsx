@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, Terminal, BrainCircuit, Database, ShieldAlert, Cpu } from 'lucide-react';
-import { CleanedProperty } from '../../assets/mockData';
-import { ParsedRequirement } from '../../services/mockApi';
+import { CleanedProperty } from '../assets/mockData';
+import { ParsedRequirement } from '../services/mockApi';
 
 interface DeveloperConsoleProps {
   isOpen: boolean;

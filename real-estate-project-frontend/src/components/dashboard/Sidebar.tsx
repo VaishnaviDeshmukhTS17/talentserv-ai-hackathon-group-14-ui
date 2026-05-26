@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { 
   Sparkles, Terminal, LogOut, X,
   LayoutDashboard, ClipboardList, Home, Layers, Building2, 
-  BarChart3, BookOpen, Shield, Settings 
+  BarChart3, Map, BookOpen, Shield, Settings 
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -35,6 +35,7 @@ export default function Sidebar({
     { name: 'Comparisons', icon: Layers },
     { name: 'Builders', icon: Building2 },
     { name: 'Trends', icon: BarChart3 },
+    { name: 'GIS Heatmaps', icon: Map },
     { name: 'Saved Searches', icon: BookOpen },
     { name: 'Data & Compliance', icon: Shield },
     { name: 'Settings', icon: Settings },

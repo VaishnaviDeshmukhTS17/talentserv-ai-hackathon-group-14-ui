@@ -9,7 +9,7 @@ from db.mongo import get_db
 from db.seed import seed_database
 from config import settings
 from services.data_repo import AtlasConnectionError, count_properties, fetch_builders_map, fetch_sentiment_map, fetch_trends_map, insert_properties
-from services.openai_service import chat_with_agent, parse_natural_language_requirement
+from services.openai_service import chat_with_agent, generate_room_explanation, parse_natural_language_requirement
 from services.search_pipeline import execute_search
 
 router = APIRouter(prefix="/api", tags=["search"])
@@ -30,6 +30,15 @@ class ChatRequest(BaseModel):
 
 class IngestRequest(BaseModel):
     properties: List[Dict[str, Any]]
+
+
+class VastuExplainRequest(BaseModel):
+    propertyName: str
+    roomName: str
+    direction: str
+    isCompliant: bool
+    remedy: Optional[str] = None
+
 
 
 @router.post("/search")
@@ -115,3 +124,16 @@ async def ingest_properties(body: IngestRequest):
     db = get_db()
     inserted = await insert_properties(db, body.properties)
     return {"inserted": inserted}
+
+
+@router.post("/vastu/explain")
+async def explain_vastu(body: VastuExplainRequest):
+    explanation = await generate_room_explanation(
+        body.propertyName,
+        body.roomName,
+        body.direction,
+        body.isCompliant,
+        body.remedy,
+    )
+    return {"explanation": explanation}
+

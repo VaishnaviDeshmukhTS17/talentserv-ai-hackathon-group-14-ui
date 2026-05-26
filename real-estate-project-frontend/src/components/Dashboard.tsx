@@ -18,9 +18,12 @@ import PropertiesTab from './dashboard/PropertiesTab';
 import ComparisonsTab from './dashboard/ComparisonsTab';
 import BuildersTab from './dashboard/BuildersTab';
 import TrendsTab from './dashboard/TrendsTab';
+import GISHeatmap from './dashboard/GISHeatmap';
 import SavedSearchesTab from './dashboard/SavedSearchesTab';
 import SettingsTab from './dashboard/SettingsTab';
 import DataComplianceTab from './dashboard/DataComplianceTab';
+import AmbientBackground from './dashboard/AmbientBackground';
+import CompareDock from './dashboard/CompareDock';
 import { useToast } from './Toast';
 import {
   markOnboardingComplete,
@@ -87,19 +90,22 @@ export default function Dashboard() {
       .join('. ');
 
     try {
-      // Step 1: Parse NL → structured filters (shown immediately in UI)
-      const parseResult = await parseRequirement(conversationQuery || text);
-      const parsed = normalizeParsedRequirement(parseResult.parsedRequirement);
-      setStructuredFilters(parsed as ParsedRequirement);
-      setManualOverrides(parsed);
-
-      // Step 2: Conversational reply
+      // Step 1: Conversational reply & parsed requirement in a single step
       const response = await chatWithAgent(updatedHistory);
       setChatMessages([...updatedHistory, { role: 'assistant', content: response.reply }]);
 
-      // Step 3: Search listings using structured filters
-      const newQueryText = buildSearchQueryFromRequirement(parsed, conversationQuery || text);
-      await handleSearch(newQueryText, parsed, { skipLoadingToggle: true });
+      let parsed = structuredFilters;
+      if (response.parsedRequirement) {
+        parsed = normalizeParsedRequirement(response.parsedRequirement) as ParsedRequirement;
+        setStructuredFilters(parsed);
+        setManualOverrides(parsed);
+      }
+
+      // Step 2: Search listings using the parsed filters
+      if (parsed) {
+        const newQueryText = buildSearchQueryFromRequirement(parsed, conversationQuery || text);
+        await handleSearch(newQueryText, parsed, { skipLoadingToggle: true });
+      }
     } catch (e) {
       console.error(e);
       setChatMessages([...updatedHistory, {
@@ -595,6 +601,14 @@ export default function Dashboard() {
             currentLocality={currentLocality}
           />
         );
+      case 'GIS Heatmaps':
+        return (
+          <GISHeatmap
+            properties={properties}
+            currentCity={currentCity}
+            currentLocality={currentLocality}
+          />
+        );
       case 'Saved Searches':
         return (
           <SavedSearchesTab
@@ -664,6 +678,9 @@ export default function Dashboard() {
     <div className="flex h-screen min-h-0 bg-theme-bg text-theme-text font-sans overflow-hidden select-none relative">
       {/* Aceternity UI Dot Grid Background */}
       <div className="absolute inset-0 aceternity-dots aceternity-mask pointer-events-none z-0"></div>
+      
+      {/* Ambient Magnetic Aura Canvas Background */}
+      <AmbientBackground theme={theme} />
 
       {sidebarOpen && (
         <button
@@ -726,6 +743,15 @@ export default function Dashboard() {
         parsedRequirement={parsedRequirement}
         properties={properties}
         aiMode={effectiveAiMode}
+      />
+
+      {/* Floating Drag-and-Drop Compare Dock */}
+      <CompareDock
+        selectedProperties={selectedProperties}
+        toggleSelectProperty={toggleSelectProperty}
+        setSelectedProperties={setSelectedProperties}
+        allProperties={properties}
+        onCompareClick={() => selectTab('Comparisons')}
       />
 
       {/* Onboarding Welcome Wizard Overlay */}

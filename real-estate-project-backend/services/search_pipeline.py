@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from typing import Any
 
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -27,11 +28,19 @@ from services.openai_service import (
 
 def _calculate_match_score(prop: dict[str, Any], req: dict[str, Any]) -> int:
     score = 100
-    if prop.get("locality", "").lower() != req.get("locality", "").lower():
+    prop_loc = str(prop.get("locality") or "").strip().lower()
+    req_loc = str(req.get("locality") or "").strip().lower()
+    if prop_loc != req_loc:
         score -= 30
     req_bhk = req.get("bhk")
-    if req_bhk is not None and prop.get("bhk") != req_bhk:
-        score -= 20 * abs(prop.get("bhk", 0) - req_bhk)
+    if req_bhk is not None:
+        try:
+            req_bhk_val = int(req_bhk)
+            prop_bhk_val = int(prop.get("bhk") or 0)
+            if prop_bhk_val != req_bhk_val:
+                score -= 20 * abs(prop_bhk_val - req_bhk_val)
+        except (ValueError, TypeError):
+            pass
     budget = req.get("budget_max")
     price = prop.get("price", 0)
     if budget and price > budget:
@@ -42,7 +51,7 @@ def _calculate_match_score(prop: dict[str, Any], req: dict[str, Any]) -> int:
         score += min(5, round(savings * 10))
     status_pref = req.get("status_preference")
     if status_pref:
-        is_ready = "ready" in prop.get("status", "").lower()
+        is_ready = "ready" in str(prop.get("status") or "").lower()
         wants_ready = status_pref == "Ready to Move"
         if is_ready != wants_ready:
             score -= 15
@@ -83,9 +92,13 @@ async def execute_search(
 ) -> dict[str, Any]:
     overrides = overrides or {}
 
-    base = await parse_query_with_ai(query)
-    if not base:
-        base = mock_parse_query(query)
+    # If overrides are provided (e.g. from chat assistant or UI filters), bypass the expensive LLM query parsing
+    if overrides and len(overrides) > 0:
+        base = overrides
+    else:
+        base = await parse_query_with_ai(query)
+        if not base:
+            base = mock_parse_query(query)
     parsed = normalize_parsed_requirement({**base, **overrides})
 
     raw_props = await fetch_all_properties(db)
@@ -104,14 +117,16 @@ async def execute_search(
     filtered = [
         p
         for p in deduped
-        if p.get("city", "").lower() == parsed["city"].lower()
-        and str(p.get("transaction_type", "")).lower() == str(parsed["transaction_type"]).lower()
+        if str(p.get("city") or "").lower() == str(parsed.get("city") or "Pune").lower()
+        and str(p.get("transaction_type") or "").lower() == str(parsed.get("transaction_type") or "Buy").lower()
         and (not parsed.get("vastu_compliant_only") or (p.get("vastu_score") or 0) >= 80)
     ]
 
-    if parsed.get("locality"):
-        if any(p.get("locality", "").lower() == parsed["locality"].lower() for p in filtered):
-            filtered = [p for p in filtered if p.get("locality", "").lower() == parsed["locality"].lower()]
+    parsed_locality = parsed.get("locality")
+    if parsed_locality:
+        parsed_loc_lower = str(parsed_locality).lower()
+        if any(str(p.get("locality") or "").lower() == parsed_loc_lower for p in filtered):
+            filtered = [p for p in filtered if str(p.get("locality") or "").lower() == parsed_loc_lower]
 
     scored: list[dict[str, Any]] = []
     for prop in filtered:
@@ -155,13 +170,33 @@ async def execute_search(
 
     scored.sort(key=lambda p: p.get("match_score", 0), reverse=True)
 
+    # Prepare explanation tasks for the top 3 recommendations in parallel to save time.
+    explanation_tasks = []
+    for idx, prop in enumerate(scored):
+        if settings.openai_configured and idx < 3:
+            explanation_tasks.append(generate_ai_explanation(prop, parsed))
+        else:
+            explanation_tasks.append(None)
+
+    explanations = []
+    if any(task is not None for task in explanation_tasks):
+        active_tasks = [t for t in explanation_tasks if t is not None]
+        results = await asyncio.gather(*active_tasks)
+        res_idx = 0
+        for task in explanation_tasks:
+            if task is not None:
+                explanations.append(results[res_idx])
+                res_idx += 1
+            else:
+                explanations.append(None)
+    else:
+        explanations = [None] * len(scored)
+
     final: list[dict[str, Any]] = []
     for idx, prop in enumerate(scored):
         builder = builders_map.get(prop.get("builder_or_owner", ""))
         sentiment = sentiment_map.get(prop.get("locality", ""))
-        explanation = None
-        if settings.openai_configured and idx < 3:
-            explanation = await generate_ai_explanation(prop, parsed)
+        explanation = explanations[idx]
         if not explanation:
             explanation = _generate_explanation(prop, parsed, builder, sentiment)
         final.append({**prop, "recommendation_explanation": explanation})

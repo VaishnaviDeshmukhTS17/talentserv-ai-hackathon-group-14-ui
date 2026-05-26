@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CleanedProperty } from '../../assets/mockData';
-import { Compass, Flame, Bed, Sparkles, CheckCircle2, AlertTriangle, Info } from 'lucide-react';
+import { Compass, Flame, Bed, Sparkles, CheckCircle2, AlertTriangle, Info, Grid } from 'lucide-react';
+import FloorPlanExplainer from './FloorPlanExplainer';
 
 interface VastuCompassWidgetProps {
   property: CleanedProperty;
@@ -8,6 +9,7 @@ interface VastuCompassWidgetProps {
 
 export default function VastuCompassWidget({ property }: VastuCompassWidgetProps) {
   const [hoveredItem, setHoveredItem] = useState<'entrance' | 'kitchen' | 'bedroom' | 'pooja' | null>(null);
+  const [viewMode, setViewMode] = useState<'compass' | 'floorplan'>('compass');
 
   const vastu_score = property.vastu_score !== undefined ? property.vastu_score : 0;
   const vastu_compliant_level = property.vastu_compliant_level || 'Moderate';
@@ -107,121 +109,157 @@ export default function VastuCompassWidget({ property }: VastuCompassWidgetProps
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 xs:gap-5 md:gap-6 p-4 xs:p-5 glass-panel rounded-xl animate-in fade-in duration-300">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-5 glass-panel rounded-xl animate-in fade-in duration-300">
       
       {/* Col 1: Compass Display (lg: 5 cols) */}
-      <div className="lg:col-span-5 flex flex-col items-center justify-center p-4 border border-theme-border rounded-lg bg-theme-input/30 relative">
-        <h4 className="text-xs font-mono uppercase tracking-wider text-theme-text-muted mb-4 flex items-center gap-1.5 font-semibold">
-          <Compass className="w-4 h-4 text-theme-accent animate-pulse" /> Vastu Compass Orientation
+      <div className="lg:col-span-5 flex flex-col items-center justify-start p-4 border border-theme-border rounded-lg bg-theme-input/30 relative">
+        <h4 className="text-xs font-mono uppercase tracking-wider text-theme-text-muted mb-3 flex items-center gap-1.5 font-semibold">
+          <Compass className="w-4 h-4 text-theme-accent animate-pulse" /> Vastu Spatial Review
         </h4>
         
-        {/* SVG Compass */}
-        <div className="relative w-48 h-48 sm:w-56 sm:h-56 select-none">
-          <svg viewBox="0 0 200 200" className="w-full h-full">
-            {/* Ambient glow backing for compass */}
-            <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(167,139,250,0.05)" strokeWidth="10" className="blur-md" />
-            
-            {/* Outer Ring */}
-            <circle cx="100" cy="100" r="80" fill="none" stroke="var(--theme-border)" strokeWidth="1.5" />
-            <circle cx="100" cy="100" r="76" fill="none" stroke="var(--theme-border)" strokeWidth="0.5" strokeDasharray="3,3" />
-            
-            {/* Concentric Inner Ring */}
-            <circle cx="100" cy="100" r="50" fill="none" stroke="var(--theme-border)" strokeWidth="0.5" />
-            
-            {/* Cross Lines (N-S, E-W) */}
-            <line x1="100" y1="20" x2="100" y2="180" stroke="var(--theme-border)" strokeWidth="0.5" strokeDasharray="2,4" />
-            <line x1="20" y1="100" x2="180" y2="100" stroke="var(--theme-border)" strokeWidth="0.5" strokeDasharray="2,4" />
+        {/* View Mode Toggle Tabs */}
+        <div className="flex bg-theme-bg/60 p-1 rounded-lg border border-theme-border/50 mb-4 w-full justify-between items-center max-w-[240px] sm:max-w-[260px] relative z-10">
+          <button
+            onClick={() => setViewMode('compass')}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-md text-[10px] sm:text-xs font-mono font-bold transition-all cursor-pointer ${
+              viewMode === 'compass' 
+                ? 'bg-theme-accent text-white shadow shadow-theme-accent/20' 
+                : 'text-theme-text-muted hover:text-white'
+            }`}
+          >
+            <Compass className="w-3.5 h-3.5" /> Compass
+          </button>
+          <button
+            onClick={() => setViewMode('floorplan')}
+            className={`flex-1 flex-items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-md text-[10px] sm:text-xs font-mono font-bold transition-all cursor-pointer ${
+              viewMode === 'floorplan' 
+                ? 'bg-theme-accent text-white shadow shadow-theme-accent/20' 
+                : 'text-theme-text-muted hover:text-white'
+            }`}
+          >
+            <Grid className="w-3.5 h-3.5" /> Floor Plan
+          </button>
+        </div>
 
-            {/* Direction Labels */}
-            <text x="100" y="16" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#ef4444" className="font-mono">N</text>
-            <text x="100" y="192" textAnchor="middle" fontSize="10" fontWeight="bold" fill="var(--theme-text-muted)" className="font-mono">S</text>
-            <text x="192" y="103" textAnchor="middle" fontSize="10" fontWeight="bold" fill="var(--theme-text-muted)" className="font-mono">E</text>
-            <text x="8" y="103" textAnchor="middle" fontSize="10" fontWeight="bold" fill="var(--theme-text-muted)" className="font-mono">W</text>
-            
-            {/* Ordinals */}
-            <text x="160" y="44" textAnchor="middle" fontSize="7" fill="var(--theme-text-muted)" opacity="0.6" className="font-mono">NE</text>
-            <text x="160" y="162" textAnchor="middle" fontSize="7" fill="var(--theme-text-muted)" opacity="0.6" className="font-mono">SE</text>
-            <text x="40" y="162" textAnchor="middle" fontSize="7" fill="var(--theme-text-muted)" opacity="0.6" className="font-mono">SW</text>
-            <text x="40" y="44" textAnchor="middle" fontSize="7" fill="var(--theme-text-muted)" opacity="0.6" className="font-mono">NW</text>
+        {viewMode === 'compass' ? (
+          <>
+            {/* SVG Compass */}
+            <div className="relative w-48 h-48 sm:w-56 sm:h-56 select-none animate-fadeIn">
+              <svg viewBox="0 0 200 200" className="w-full h-full">
+                {/* Ambient glow backing for compass */}
+                <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(167,139,250,0.05)" strokeWidth="10" className="blur-md" />
+                
+                {/* Outer Ring */}
+                <circle cx="100" cy="100" r="80" fill="none" stroke="var(--theme-border)" strokeWidth="1.5" />
+                <circle cx="100" cy="100" r="76" fill="none" stroke="var(--theme-border)" strokeWidth="0.5" strokeDasharray="3,3" />
+                
+                {/* Concentric Inner Ring */}
+                <circle cx="100" cy="100" r="50" fill="none" stroke="var(--theme-border)" strokeWidth="0.5" />
+                
+                {/* Cross Lines (N-S, E-W) */}
+                <line x1="100" y1="20" x2="100" y2="180" stroke="var(--theme-border)" strokeWidth="0.5" strokeDasharray="2,4" />
+                <line x1="20" y1="100" x2="180" y2="100" stroke="var(--theme-border)" strokeWidth="0.5" strokeDasharray="2,4" />
 
-            {/* Rotated Pointer Arrow towards property's Facing Direction */}
-            <g transform={`rotate(${getAngle(facing_direction) - 90} 100 100)`}>
-              {/* Compass Needle - facing side (accent color) */}
-              <polygon points="100,32 106,100 100,90" fill="var(--theme-accent)" />
-              {/* Compass Needle - tail side (muted) */}
-              <polygon points="100,168 106,100 100,90" fill="rgba(255,255,255,0.15)" />
-              <polygon points="100,32 94,100 100,90" fill="var(--theme-accent)" opacity="0.8" />
-              <polygon points="100,168 94,100 100,90" fill="rgba(255,255,255,0.1)" />
-              <circle cx="100" cy="100" r="4" fill="var(--theme-bg)" stroke="var(--theme-accent)" strokeWidth="1.5" />
-            </g>
+                {/* Direction Labels */}
+                <text x="100" y="16" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#ef4444" className="font-mono">N</text>
+                <text x="100" y="192" textAnchor="middle" fontSize="10" fontWeight="bold" fill="var(--theme-text-muted)" className="font-mono">S</text>
+                <text x="192" y="103" textAnchor="middle" fontSize="10" fontWeight="bold" fill="var(--theme-text-muted)" className="font-mono">E</text>
+                <text x="8" y="103" textAnchor="middle" fontSize="10" fontWeight="bold" fill="var(--theme-text-muted)" className="font-mono">W</text>
+                
+                {/* Ordinals */}
+                <text x="160" y="44" textAnchor="middle" fontSize="7" fill="var(--theme-text-muted)" opacity="0.6" className="font-mono">NE</text>
+                <text x="160" y="162" textAnchor="middle" fontSize="7" fill="var(--theme-text-muted)" opacity="0.6" className="font-mono">SE</text>
+                <text x="40" y="162" textAnchor="middle" fontSize="7" fill="var(--theme-text-muted)" opacity="0.6" className="font-mono">SW</text>
+                <text x="40" y="44" textAnchor="middle" fontSize="7" fill="var(--theme-text-muted)" opacity="0.6" className="font-mono">NW</text>
 
-            {/* Interactive PLOTTED DOTS */}
-            
-            {/* 1. Entrance Dot (facing direction) */}
-            <g 
-              onMouseEnter={() => setHoveredItem('entrance')}
-              onMouseLeave={() => setHoveredItem(null)}
-              className="cursor-pointer transition-all duration-300"
-            >
-              {hoveredItem === 'entrance' && (
-                <circle cx={entranceCoords.x} cy={entranceCoords.y} r="10" fill="none" stroke="#38bdf8" strokeWidth="1.5" className="animate-ping" />
-              )}
-              <circle cx={entranceCoords.x} cy={entranceCoords.y} r="7" fill="#38bdf8" stroke="var(--theme-bg)" strokeWidth="1.5" />
-              <text x={entranceCoords.x} y={entranceCoords.y + 2.5} textAnchor="middle" fontSize="8" fontWeight="bold" fill="black" className="font-mono pointer-events-none">E</text>
-            </g>
+                {/* Rotated Pointer Arrow towards property's Facing Direction */}
+                <g transform={`rotate(${getAngle(facing_direction) - 90} 100 100)`}>
+                  {/* Compass Needle - facing side (accent color) */}
+                  <polygon points="100,32 106,100 100,90" fill="var(--theme-accent)" />
+                  {/* Compass Needle - tail side (muted) */}
+                  <polygon points="100,168 106,100 100,90" fill="rgba(255,255,255,0.15)" />
+                  <polygon points="100,32 94,100 100,90" fill="var(--theme-accent)" opacity="0.8" />
+                  <polygon points="100,168 94,100 100,90" fill="rgba(255,255,255,0.1)" />
+                  <circle cx="100" cy="100" r="4" fill="var(--theme-bg)" stroke="var(--theme-accent)" strokeWidth="1.5" />
+                </g>
 
-            {/* 2. Kitchen Dot */}
-            <g 
-              onMouseEnter={() => setHoveredItem('kitchen')}
-              onMouseLeave={() => setHoveredItem(null)}
-              className="cursor-pointer transition-all duration-300"
-            >
-              {hoveredItem === 'kitchen' && (
-                <circle cx={kitchenCoords.x} cy={kitchenCoords.y} r="10" fill="none" stroke="#f97316" strokeWidth="1.5" className="animate-ping" />
-              )}
-              <circle cx={kitchenCoords.x} cy={kitchenCoords.y} r="7" fill="#f97316" stroke="var(--theme-bg)" strokeWidth="1.5" />
-              <text x={kitchenCoords.x} y={kitchenCoords.y + 2.5} textAnchor="middle" fontSize="8" fontWeight="bold" fill="black" className="font-mono pointer-events-none">K</text>
-            </g>
+                {/* Interactive PLOTTED DOTS */}
+                
+                {/* 1. Entrance Dot (facing direction) */}
+                <g 
+                  onMouseEnter={() => setHoveredItem('entrance')}
+                  onMouseLeave={() => setHoveredItem(null)}
+                  className="cursor-pointer transition-all duration-300"
+                >
+                  {hoveredItem === 'entrance' && (
+                    <circle cx={entranceCoords.x} cy={entranceCoords.y} r="10" fill="none" stroke="#38bdf8" strokeWidth="1.5" className="animate-ping" />
+                  )}
+                  <circle cx={entranceCoords.x} cy={entranceCoords.y} r="7" fill="#38bdf8" stroke="var(--theme-bg)" strokeWidth="1.5" />
+                  <text x={entranceCoords.x} y={entranceCoords.y + 2.5} textAnchor="middle" fontSize="8" fontWeight="bold" fill="black" className="font-mono pointer-events-none">E</text>
+                </g>
 
-            {/* 3. Bedroom Dot */}
-            <g 
-              onMouseEnter={() => setHoveredItem('bedroom')}
-              onMouseLeave={() => setHoveredItem(null)}
-              className="cursor-pointer transition-all duration-300"
-            >
-              {hoveredItem === 'bedroom' && (
-                <circle cx={bedroomCoords.x} cy={bedroomCoords.y} r="10" fill="none" stroke="#a78bfa" strokeWidth="1.5" className="animate-ping" />
-              )}
-              <circle cx={bedroomCoords.x} cy={bedroomCoords.y} r="7" fill="#a78bfa" stroke="var(--theme-bg)" strokeWidth="1.5" />
-              <text x={bedroomCoords.x} y={bedroomCoords.y + 2.5} textAnchor="middle" fontSize="8" fontWeight="bold" fill="black" className="font-mono pointer-events-none">B</text>
-            </g>
+                {/* 2. Kitchen Dot */}
+                <g 
+                  onMouseEnter={() => setHoveredItem('kitchen')}
+                  onMouseLeave={() => setHoveredItem(null)}
+                  className="cursor-pointer transition-all duration-300"
+                >
+                  {hoveredItem === 'kitchen' && (
+                    <circle cx={kitchenCoords.x} cy={kitchenCoords.y} r="10" fill="none" stroke="#f97316" strokeWidth="1.5" className="animate-ping" />
+                  )}
+                  <circle cx={kitchenCoords.x} cy={kitchenCoords.y} r="7" fill="#f97316" stroke="var(--theme-bg)" strokeWidth="1.5" />
+                  <text x={kitchenCoords.x} y={kitchenCoords.y + 2.5} textAnchor="middle" fontSize="8" fontWeight="bold" fill="black" className="font-mono pointer-events-none">K</text>
+                </g>
 
-            {/* 4. Pooja Dot */}
-            {poojaCoords && pooja_direction && (
-              <g 
-                onMouseEnter={() => setHoveredItem('pooja')}
-                onMouseLeave={() => setHoveredItem(null)}
-                className="cursor-pointer transition-all duration-300"
-              >
-                {hoveredItem === 'pooja' && (
-                  <circle cx={poojaCoords.x} cy={poojaCoords.y} r="10" fill="none" stroke="#fbbf24" strokeWidth="1.5" className="animate-ping" />
+                {/* 3. Bedroom Dot */}
+                <g 
+                  onMouseEnter={() => setHoveredItem('bedroom')}
+                  onMouseLeave={() => setHoveredItem(null)}
+                  className="cursor-pointer transition-all duration-300"
+                >
+                  {hoveredItem === 'bedroom' && (
+                    <circle cx={bedroomCoords.x} cy={bedroomCoords.y} r="10" fill="none" stroke="#a78bfa" strokeWidth="1.5" className="animate-ping" />
+                  )}
+                  <circle cx={bedroomCoords.x} cy={bedroomCoords.y} r="7" fill="#a78bfa" stroke="var(--theme-bg)" strokeWidth="1.5" />
+                  <text x={bedroomCoords.x} y={bedroomCoords.y + 2.5} textAnchor="middle" fontSize="8" fontWeight="bold" fill="black" className="font-mono pointer-events-none">B</text>
+                </g>
+
+                {/* 4. Pooja Dot */}
+                {poojaCoords && pooja_direction && (
+                  <g 
+                    onMouseEnter={() => setHoveredItem('pooja')}
+                    onMouseLeave={() => setHoveredItem(null)}
+                    className="cursor-pointer transition-all duration-300"
+                  >
+                    {hoveredItem === 'pooja' && (
+                      <circle cx={poojaCoords.x} cy={poojaCoords.y} r="10" fill="none" stroke="#fbbf24" strokeWidth="1.5" className="animate-ping" />
+                    )}
+                    <circle cx={poojaCoords.x} cy={poojaCoords.y} r="7" fill="#fbbf24" stroke="var(--theme-bg)" strokeWidth="1.5" />
+                    <text x={poojaCoords.x} y={poojaCoords.y + 2.5} textAnchor="middle" fontSize="8" fontWeight="bold" fill="black" className="font-mono pointer-events-none">P</text>
+                  </g>
                 )}
-                <circle cx={poojaCoords.x} cy={poojaCoords.y} r="7" fill="#fbbf24" stroke="var(--theme-bg)" strokeWidth="1.5" />
-                <text x={poojaCoords.x} y={poojaCoords.y + 2.5} textAnchor="middle" fontSize="8" fontWeight="bold" fill="black" className="font-mono pointer-events-none">P</text>
-              </g>
-            )}
-          </svg>
-        </div>
+              </svg>
+            </div>
 
-        {/* Legend */}
-        <div className="flex flex-wrap items-center justify-center gap-3.5 mt-4 text-[10px] font-mono text-theme-text-muted">
-          <span className="flex items-center gap-1"><circle cx="4" cy="4" r="4" fill="#38bdf8" /> Entrance (E)</span>
-          <span className="flex items-center gap-1"><circle cx="4" cy="4" r="4" fill="#f97316" /> Kitchen (K)</span>
-          <span className="flex items-center gap-1"><circle cx="4" cy="4" r="4" fill="#a78bfa" /> Bedroom (B)</span>
-          {pooja_direction && (
-            <span className="flex items-center gap-1"><circle cx="4" cy="4" r="4" fill="#fbbf24" /> Pooja (P)</span>
-          )}
-        </div>
+            {/* Legend */}
+            <div className="flex flex-wrap items-center justify-center gap-3.5 mt-4 text-[10px] font-mono text-theme-text-muted">
+              <span className="flex items-center gap-1"><circle cx="4" cy="4" r="4" fill="#38bdf8" /> Entrance (E)</span>
+              <span className="flex items-center gap-1"><circle cx="4" cy="4" r="4" fill="#f97316" /> Kitchen (K)</span>
+              <span className="flex items-center gap-1"><circle cx="4" cy="4" r="4" fill="#a78bfa" /> Bedroom (B)</span>
+              {pooja_direction && (
+                <span className="flex items-center gap-1"><circle cx="4" cy="4" r="4" fill="#fbbf24" /> Pooja (P)</span>
+              )}
+            </div>
+          </>
+        ) : (
+          <div className="w-full flex justify-center animate-fadeIn">
+            <FloorPlanExplainer 
+              property={property} 
+              hoveredItem={hoveredItem}
+              setHoveredItem={setHoveredItem}
+            />
+          </div>
+        )}
       </div>
 
       {/* Col 2: Vastu Audit Checklist & Remedy (lg: 7 cols) */}

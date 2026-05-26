@@ -1,11 +1,12 @@
 import React from 'react';
+import ModalPortal from '../ModalPortal';
 import { 
   BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie
 } from 'recharts';
 import { 
   Home, Star, TrendingUp, Building2, 
-  AlertTriangle, Sparkles, Compass, MapPin, Zap
+  AlertTriangle, Sparkles, Compass, MapPin, Zap, X
 } from 'lucide-react';
 import { ParsedRequirement } from '../../services/mockApi';
 import { CleanedProperty, localitySentimentData, localityTrendsData, BuilderReputation, LocalitySentiment, LocalityTrend } from '../../assets/mockData';
@@ -66,8 +67,8 @@ export default function OverviewTab(props: OverviewTabProps) {
     currentTrend,
     trendsMap,
   } = props;
-  const [expandedPropId, setExpandedPropId] = React.useState<string | null>(null);
-  const [expandedVastuPropId, setExpandedVastuPropId] = React.useState<string | null>(null);
+  const [activeMapProperty, setActiveMapProperty] = React.useState<CleanedProperty | null>(null);
+  const [activeVastuProperty, setActiveVastuProperty] = React.useState<CleanedProperty | null>(null);
   const [chatInput, setChatInput] = React.useState('');
   const openAiActive = aiMode === 'openai';
   const aiModelLabel = openAiActive ? 'PropIntel AI • Online' : 'Smart Search • Active';
@@ -431,143 +432,100 @@ export default function OverviewTab(props: OverviewTabProps) {
                       <th className="py-3 px-2 xs:px-3 text-center w-[8%] hidden sm:table-cell">Vastu</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-theme-border/20">
+                  <tbody>
                     {properties.map((prop) => {
                       if (prop.is_incomplete) return null;
                       const isSelected = !!selectedProperties.find(p => p.property_id === prop.property_id);
-                      const isExpanded = expandedPropId === prop.property_id;
-                      const isVastuExpanded = expandedVastuPropId === prop.property_id;
+                      const isMapActive = activeMapProperty?.property_id === prop.property_id;
+                      const isVastuActive = activeVastuProperty?.property_id === prop.property_id;
                       
                       return (
-                        <React.Fragment key={prop.property_id}>
-                          <tr 
-                            onClick={() => toggleSelectProperty(prop)}
-                            className={`group cursor-pointer text-sm font-medium transition-colors hover:bg-theme-btn-hover ${
-                              isSelected ? 'bg-theme-accent-muted' : ''
-                            }`}
-                          >
-                            <td className="py-3.5 px-2 xs:px-3">
-                              <input
-                                type="checkbox"
-                                checked={isSelected}
-                                onChange={() => toggleSelectProperty(prop)}
-                                className="rounded border-theme-border text-theme-accent focus:ring-0 focus:ring-offset-0 bg-black/40 w-3.5 h-3.5 cursor-pointer accent-theme-accent"
-                                onClick={(e) => e.stopPropagation()} // keep row click from double toggling checkbox
-                              />
-                            </td>
-                            <td className="py-3.5 px-2 xs:px-3 font-semibold text-theme-text-light">
-                              <div className="flex items-center gap-2 xs:gap-3">
-                                <div className="w-7 h-7 xs:w-8 xs:h-8 rounded-lg bg-theme-card border border-theme-border flex items-center justify-center text-theme-text-muted group-hover:border-theme-accent-border group-hover:text-theme-text-light transition-all flex-shrink-0">
+                        <tr 
+                          key={prop.property_id}
+                          onClick={() => toggleSelectProperty(prop)}
+                          className={`group cursor-pointer text-sm font-medium transition-colors hover:bg-theme-btn-hover ${
+                            isSelected ? 'bg-theme-accent-muted' : ''
+                          }`}
+                        >
+                          <td className="py-3.5 px-2 xs:px-3">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => toggleSelectProperty(prop)}
+                              className="rounded border-theme-border text-theme-accent focus:ring-0 focus:ring-offset-0 bg-black/40 w-3.5 h-3.5 cursor-pointer accent-theme-accent"
+                              onClick={(e) => e.stopPropagation()} // keep row click from double toggling checkbox
+                            />
+                          </td>
+                          <td className="py-3.5 px-2 xs:px-3 font-semibold text-theme-text-light">
+                            <div className="flex items-center gap-2 xs:gap-3">
+                              <div className="w-7 h-7 xs:w-8 xs:h-8 rounded-lg bg-theme-card border border-theme-border flex items-center justify-center text-theme-text-muted group-hover:border-theme-accent-border group-hover:text-theme-text-light transition-all overflow-hidden flex-shrink-0">
+                                {prop.image_url ? (
+                                  <img 
+                                    src={prop.image_url} 
+                                    alt={prop.title} 
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
                                   <Building2 className="w-4 h-4" />
-                                </div>
-                                <div className="min-w-0">
-                                  <div className="truncate font-semibold text-theme-text group-hover:text-theme-text-light transition-colors" title={prop.title}>
-                                    {prop.title}
-                                  </div>
-                                  <div className="text-xs text-theme-text-muted truncate font-mono mt-0.5 font-medium">{prop.builder_or_owner}</div>
-                                </div>
+                                )}
                               </div>
-                            </td>
-                            <td className="py-3.5 px-2 xs:px-3 text-theme-text-muted font-mono hidden sm:table-cell">{prop.locality}</td>
-                            <td className="py-3.5 px-2 xs:px-3 text-right font-semibold text-theme-text-light font-mono whitespace-nowrap">
-                              {prop.transaction_type === 'Rent'
-                                ? `₹${prop.price.toLocaleString()} / mo`
-                                : `₹${(prop.price / 100000).toFixed(1)} L`
-                              }
-                            </td>
-                            <td className="py-3.5 px-2 xs:px-3 text-right text-theme-text-muted font-mono hidden md:table-cell">{prop.area_sqft}</td>
-                            <td className="py-3.5 px-2 xs:px-3 text-right text-theme-text-muted font-mono font-semibold hidden lg:table-cell">₹{prop.price_per_sqft.toLocaleString()}</td>
-                            <td className="py-3 px-2 xs:px-3 text-right hidden xs:table-cell">
-                              <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-mono ${
-                                prop.status.includes('Ready')
-                                  ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-900/30'
-                                  : 'bg-amber-950/40 text-amber-400 border border-amber-900/30'
-                              }`}>
-                                {prop.status}
-                              </span>
-                            </td>
-                            <td className="py-3 px-2 xs:px-3 text-center hidden sm:table-cell" onClick={(e) => e.stopPropagation()}>
-                              <button
-                                onClick={() => {
-                                  setExpandedPropId(isExpanded ? null : prop.property_id);
-                                  setExpandedVastuPropId(null);
-                                }}
-                                className={`p-1.5 rounded-lg border transition-all ${
-                                  isExpanded
-                                    ? 'bg-theme-accent text-theme-bg border-theme-accent'
-                                    : 'bg-theme-btn border-theme-border text-theme-text-muted hover:text-theme-accent hover:border-theme-accent-border'
-                                }`}
-                                title="View Map & Geo-Proximity"
-                              >
-                                <Compass className="w-3.5 h-3.5" />
-                              </button>
-                            </td>
-                            <td className="py-3 px-2 xs:px-3 text-center hidden sm:table-cell" onClick={(e) => e.stopPropagation()}>
-                              <button
-                                onClick={() => {
-                                  setExpandedVastuPropId(isVastuExpanded ? null : prop.property_id);
-                                  setExpandedPropId(null);
-                                }}
-                                className={`p-1.5 rounded-lg border transition-all ${
-                                  isVastuExpanded
-                                    ? 'bg-theme-accent text-theme-bg border-theme-accent'
-                                    : 'bg-theme-btn border-theme-border text-theme-text-muted hover:text-theme-accent hover:border-theme-accent-border'
-                                }`}
-                                title="View Vastu Compliance"
-                              >
-                                <Compass className="w-3.5 h-3.5 rotate-45" />
-                              </button>
-                            </td>
-                          </tr>
-                          {isExpanded && (
-                            <tr className="bg-theme-bg/30">
-                              <td colSpan={9} className="p-4 border-b border-theme-border/20">
-                                <div className="p-5 bg-theme-card/60 border border-theme-border/40 rounded-xl">
-                                  <div className="flex justify-between items-center mb-4 pb-2 border-b border-theme-border/10">
-                                    <h4 className="text-xs font-bold text-theme-text-light uppercase tracking-wider font-mono flex items-center gap-1.5">
-                                      <MapPin className="w-3.5 h-3.5 text-theme-accent animate-pulse" />
-                                      <span>Location Proximity: {prop.title}</span>
-                                    </h4>
-                                    <button 
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setExpandedPropId(null);
-                                      }}
-                                      className="text-[10px] text-theme-text-muted hover:text-theme-text-light font-mono underline"
-                                    >
-                                      Hide Map
-                                    </button>
-                                  </div>
-                                  <POIProximityList property={prop} theme={theme} />
+                              <div className="min-w-0">
+                                <div className="truncate font-semibold text-theme-text group-hover:text-theme-text-light transition-colors" title={prop.title}>
+                                  {prop.title}
                                 </div>
-                              </td>
-                            </tr>
-                          )}
-                          {isVastuExpanded && (
-                            <tr className="bg-theme-bg/30">
-                              <td colSpan={9} className="p-4 border-b border-theme-border/20">
-                                <div className="p-5 bg-theme-card/60 border border-theme-border/40 rounded-xl">
-                                  <div className="flex justify-between items-center mb-4 pb-2 border-b border-theme-border/10">
-                                    <h4 className="text-xs font-bold text-theme-text-light uppercase tracking-wider font-mono flex items-center gap-1.5">
-                                      <Compass className="w-3.5 h-3.5 text-theme-accent animate-pulse rotate-45" />
-                                      <span>Vastu Audit Report: {prop.title}</span>
-                                    </h4>
-                                    <button 
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setExpandedVastuPropId(null);
-                                      }}
-                                      className="text-[10px] text-theme-text-muted hover:text-theme-text-light font-mono underline"
-                                    >
-                                      Hide Vastu
-                                    </button>
-                                  </div>
-                                  <VastuCompassWidget property={prop} />
-                                </div>
-                              </td>
-                            </tr>
-                          )}
-                        </React.Fragment>
+                                <div className="text-xs text-theme-text-muted truncate font-mono mt-0.5 font-medium">{prop.builder_or_owner}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-3.5 px-2 xs:px-3 text-theme-text-muted font-mono hidden sm:table-cell">{prop.locality}</td>
+                          <td className="py-3.5 px-2 xs:px-3 text-right font-semibold text-theme-text-light font-mono whitespace-nowrap">
+                            {prop.transaction_type === 'Rent'
+                              ? `₹${prop.price.toLocaleString()} / mo`
+                              : `₹${(prop.price / 100000).toFixed(1)} L`
+                            }
+                          </td>
+                          <td className="py-3.5 px-2 xs:px-3 text-right text-theme-text-muted font-mono hidden md:table-cell">{prop.area_sqft}</td>
+                          <td className="py-3.5 px-2 xs:px-3 text-right text-theme-text-muted font-mono font-semibold hidden lg:table-cell">₹{prop.price_per_sqft.toLocaleString()}</td>
+                          <td className="py-3 px-2 xs:px-3 text-right hidden xs:table-cell">
+                            <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-mono ${
+                              prop.status.includes('Ready')
+                                ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-900/30'
+                                : 'bg-amber-950/40 text-amber-400 border border-amber-900/30'
+                            }`}>
+                              {prop.status}
+                            </span>
+                          </td>
+                          <td className="py-3 px-2 xs:px-3 text-center hidden sm:table-cell" onClick={(e) => e.stopPropagation()}>
+                            <button
+                              onClick={() => {
+                                setActiveMapProperty(prop);
+                              }}
+                              className={`p-1.5 rounded-lg border transition-all ${
+                                isMapActive
+                                  ? 'bg-theme-accent text-theme-bg border-theme-accent'
+                                  : 'bg-theme-btn border-theme-border text-theme-text-muted hover:text-theme-accent hover:border-theme-accent-border'
+                              }`}
+                              title="View Map & Geo-Proximity"
+                            >
+                              <Compass className="w-3.5 h-3.5" />
+                            </button>
+                          </td>
+                          <td className="py-3 px-2 xs:px-3 text-center hidden sm:table-cell" onClick={(e) => e.stopPropagation()}>
+                            <button
+                              onClick={() => {
+                                setActiveVastuProperty(prop);
+                              }}
+                              className={`p-1.5 rounded-lg border transition-all ${
+                                isVastuActive
+                                  ? 'bg-theme-accent text-theme-bg border-theme-accent'
+                                  : 'bg-theme-btn border-theme-border text-theme-text-muted hover:text-theme-accent hover:border-theme-accent-border'
+                              }`}
+                              title="View Vastu Compliance"
+                            >
+                              <Compass className="w-3.5 h-3.5 rotate-45" />
+                            </button>
+                          </td>
+                        </tr>
                       );
                     })}
                   </tbody>
@@ -774,6 +732,66 @@ export default function OverviewTab(props: OverviewTabProps) {
         <AlertTriangle className="w-3.5 h-3.5 text-theme-text-muted flex-shrink-0" />
         <span>Disclaimer: Data is aggregated from multiple sources and may not be 100% accurate. System uses simulated NLP parameters for comparative demonstrations.</span>
       </footer>
+
+      {/* Map Proximity Modal Overlay */}
+      {activeMapProperty && (
+        <ModalPortal>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setActiveMapProperty(null)}>
+            <div className="w-full max-w-4xl glass-panel rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-theme-border animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+              {/* Header */}
+              <div className="flex justify-between items-center px-6 py-4 border-b border-theme-border bg-theme-input/20">
+                <div>
+                  <h3 className="text-base font-bold text-theme-text-light flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-theme-accent animate-pulse" />
+                    <span>Geo-Proximity Maps & Proximity Audit</span>
+                  </h3>
+                  <p className="text-xs text-theme-text-muted mt-0.5 font-mono">{activeMapProperty.title} • {activeMapProperty.locality}</p>
+                </div>
+                <button 
+                  onClick={() => setActiveMapProperty(null)}
+                  className="p-1.5 rounded-lg bg-theme-btn hover:bg-theme-btn-hover text-theme-text-muted hover:text-theme-text border border-theme-border transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              {/* Scrollable Content */}
+              <div className="flex-grow overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-theme-border scrollbar-track-transparent">
+                <POIProximityList property={activeMapProperty} theme={theme} />
+              </div>
+            </div>
+          </div>
+        </ModalPortal>
+      )}
+
+      {/* Vastu Audit Report Modal Overlay */}
+      {activeVastuProperty && (
+        <ModalPortal>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setActiveVastuProperty(null)}>
+            <div className="w-full max-w-4xl glass-panel rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-theme-border animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+              {/* Header */}
+              <div className="flex justify-between items-center px-6 py-4 border-b border-theme-border bg-theme-input/20">
+                <div>
+                  <h3 className="text-base font-bold text-theme-text-light flex items-center gap-2">
+                    <Compass className="w-5 h-5 text-theme-accent animate-pulse rotate-45" />
+                    <span>Vastu Compliance Audit & Spatial Review</span>
+                  </h3>
+                  <p className="text-xs text-theme-text-muted mt-0.5 font-mono">{activeVastuProperty.title} • {activeVastuProperty.locality}</p>
+                </div>
+                <button 
+                  onClick={() => setActiveVastuProperty(null)}
+                  className="p-1.5 rounded-lg bg-theme-btn hover:bg-theme-btn-hover text-theme-text-muted hover:text-theme-text border border-theme-border transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              {/* Scrollable Content */}
+              <div className="flex-grow overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-theme-border scrollbar-track-transparent">
+                <VastuCompassWidget property={activeVastuProperty} />
+              </div>
+            </div>
+          </div>
+        </ModalPortal>
+      )}
     </>
   );
 }

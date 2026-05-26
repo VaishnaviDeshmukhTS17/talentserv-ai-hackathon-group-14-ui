@@ -1,5 +1,6 @@
 import React from 'react';
-import { ExternalLink, Star, Upload, Trash2, CheckCircle2, AlertTriangle, FileText, ChevronDown, ChevronUp, Compass } from 'lucide-react';
+import ModalPortal from '../ModalPortal';
+import { ExternalLink, Star, Upload, Trash2, CheckCircle2, AlertTriangle, FileText, ChevronDown, ChevronUp, Compass, X, MapPin, GripVertical } from 'lucide-react';
 import { CleanedProperty, buildersData } from '../../assets/mockData';
 import { ingestProperties, seedDatabase } from '../../services/apiClient';
 import POIProximityList from './POIProximityList';
@@ -39,8 +40,8 @@ export default function PropertiesTab({
   const [dragActive, setDragActive] = React.useState(false);
   const [uploadStatus, setUploadStatus] = React.useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
   const [isOpenIngest, setIsOpenIngest] = React.useState(false);
-  const [expandedPropId, setExpandedPropId] = React.useState<string | null>(null);
-  const [expandedVastuPropId, setExpandedVastuPropId] = React.useState<string | null>(null);
+  const [activeMapProperty, setActiveMapProperty] = React.useState<CleanedProperty | null>(null);
+  const [activeVastuProperty, setActiveVastuProperty] = React.useState<CleanedProperty | null>(null);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -168,6 +169,7 @@ export default function PropertiesTab({
     }
     return result;
   };
+
   const filteredProps = properties.filter(prop => {
     if (propertyFilters.source !== 'all') {
       const sourceVal = propertyFilters.source.toLowerCase();
@@ -240,7 +242,7 @@ export default function PropertiesTab({
               The pipeline will automatically apply normalizations and verify duplicate profiles.
             </p>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Drag and Drop Zone */}
               <div 
                 className={`border-2 border-dashed rounded-xl p-6 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-2 ${
@@ -398,201 +400,26 @@ export default function PropertiesTab({
           <span className="text-xs text-theme-text-muted font-mono font-medium">Re-calculating comparative parameters...</span>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {sortedProps.map((prop) => {
             if (prop.is_incomplete) return null;
             const isSelected = !!selectedProperties.find(p => p.property_id === prop.property_id);
-            const builder = buildersData[prop.builder_or_owner];
 
             return (
-              <div
+              <PropertyCard
                 key={prop.property_id}
-                onClick={() => toggleSelectProperty(prop)}
-                className={`aceternity-card p-5 rounded-2xl flex flex-col justify-between cursor-pointer border ${
-                  isSelected ? 'border-theme-accent shadow-md shadow-theme-accent-muted' : 'border-theme-border'
-                }`}
-              >
-                <div className="space-y-4">
-                  <div className="flex justify-between items-start gap-4">
-                    <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <a
-                          href={prop.source_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase flex items-center gap-1 transition-all ${
-                            prop.source === 'MagicBricks'
-                              ? 'bg-purple-950/40 text-purple-400 hover:bg-purple-900/50 border border-purple-900/30'
-                              : prop.source === 'Housing.com'
-                              ? 'bg-red-950/40 text-red-400 hover:bg-red-900/50 border border-red-900/30'
-                              : 'bg-emerald-950/40 text-emerald-400 hover:bg-emerald-900/50 border border-emerald-900/30'
-                          }`}
-                        >
-                          <span>{prop.source}</span>
-                          <ExternalLink className="w-2.5 h-2.5" />
-                        </a>
-                        <span className="text-[10px] text-theme-text-muted font-mono font-medium">{prop.property_id}</span>
-                      </div>
-                      <h4 className="text-sm font-bold text-theme-text-light mt-1.5 line-clamp-1">
-                        {prop.title}
-                      </h4>
-                    </div>
-
-                    <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                      <span className="px-2 py-0.5 bg-emerald-950/40 text-emerald-400 border border-emerald-900/30 rounded text-xs font-mono font-bold whitespace-nowrap">
-                        {prop.match_score || 90}% Match
-                      </span>
-                      {prop.investment_grade && (
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold whitespace-nowrap ${
-                          prop.investment_grade.startsWith('A') 
-                            ? 'bg-amber-950/40 text-amber-400 border border-amber-900/30'
-                            : prop.investment_grade.startsWith('B')
-                            ? 'bg-blue-950/40 text-blue-400 border border-blue-900/30'
-                            : 'bg-rose-950/40 text-rose-400 border border-rose-900/30'
-                        }`} title={`Investment Score: ${prop.investment_score || 0}/100`}>
-                          Grade {prop.investment_grade}
-                        </span>
-                      )}
-                      {prop.vastu_score !== undefined && (
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold whitespace-nowrap ${
-                          prop.vastu_score >= 80
-                            ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-500/20'
-                            : prop.vastu_score >= 50
-                            ? 'bg-amber-950/40 text-amber-400 border border-amber-500/20'
-                            : 'bg-rose-950/40 text-rose-400 border border-rose-500/20'
-                        }`} title={`Vastu Score: ${prop.vastu_score}/100`}>
-                          Vastu: {prop.vastu_score}%
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2 py-2 border-y border-theme-border/20 text-center font-mono">
-                    <div>
-                      <span className="text-[9px] uppercase tracking-wider text-theme-text-muted block">Budget</span>
-                      <span className="text-xs font-bold text-theme-text-light">
-                        {prop.transaction_type === 'Rent'
-                          ? `₹${prop.price.toLocaleString()} / mo`
-                          : `₹${(prop.price / 100000).toFixed(1)} L`
-                        }
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-[9px] uppercase tracking-wider text-theme-text-muted block">Area</span>
-                      <span className="text-xs font-bold text-theme-text-light">{prop.area_sqft} sqft</span>
-                    </div>
-                    <div>
-                      <span className="text-[9px] uppercase tracking-wider text-theme-text-muted block">BHK</span>
-                      <span className="text-xs font-bold text-theme-text-light">{prop.bhk} BHK</span>
-                    </div>
-                  </div>
-
-                  <p className="text-xs leading-relaxed text-theme-text-muted italic line-clamp-2">
-                    "{prop.recommendation_explanation}"
-                  </p>
-
-                  {prop.location_scores && (
-                    <div className="pt-2.5 pb-1 border-t border-theme-border/10 space-y-2">
-                      <div className="text-[10px] uppercase font-bold text-theme-text-muted font-mono tracking-wider">Location Quality Matrix</div>
-                      <div className="grid grid-cols-4 gap-2 text-center font-mono">
-                        <div className="bg-black/20 p-1.5 rounded-lg border border-theme-border/20">
-                          <span className="text-[8px] text-theme-text-muted block">Commute</span>
-                          <span className="text-xs font-bold text-theme-text-light">{prop.location_scores.connectivity}%</span>
-                        </div>
-                        <div className="bg-black/20 p-1.5 rounded-lg border border-theme-border/20">
-                          <span className="text-[8px] text-theme-text-muted block">Schools</span>
-                          <span className="text-xs font-bold text-theme-text-light">{prop.location_scores.schools}%</span>
-                        </div>
-                        <div className="bg-black/20 p-1.5 rounded-lg border border-theme-border/20">
-                          <span className="text-[8px] text-theme-text-muted block">Lifestyle</span>
-                          <span className="text-xs font-bold text-theme-text-light">{prop.location_scores.lifestyle}%</span>
-                        </div>
-                        <div className="bg-black/20 p-1.5 rounded-lg border border-theme-border/20">
-                          <span className="text-[8px] text-theme-text-muted block">Infra</span>
-                          <span className="text-xs font-bold text-theme-text-light">{prop.location_scores.infrastructure}%</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex justify-between items-center mt-4 pt-4 border-t border-theme-border/20">
-                  <div className="min-w-0">
-                    <div className="text-xs font-bold text-theme-text truncate">{prop.builder_or_owner}</div>
-                    {builder && (
-                      <div className="flex items-center gap-1 mt-0.5">
-                        <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
-                        <span className="text-[10px] text-theme-text-muted font-bold font-mono">{(builder.reputation_score * 2).toFixed(1)} / 10</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex gap-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setExpandedPropId(expandedPropId === prop.property_id ? null : prop.property_id);
-                        setExpandedVastuPropId(null);
-                      }}
-                      className={`px-2.5 py-1.5 text-xs font-bold rounded-lg border transition-all flex items-center gap-1 ${
-                        expandedPropId === prop.property_id
-                          ? 'bg-theme-accent-muted text-theme-accent border-theme-accent-border font-bold'
-                          : 'bg-theme-btn border-theme-border text-theme-text-muted hover:text-theme-accent hover:border-theme-accent-border font-bold'
-                      }`}
-                      title="View Proximity Map"
-                    >
-                      <Compass className="w-3.5 h-3.5" />
-                      <span>{expandedPropId === prop.property_id ? 'Hide' : 'Map'}</span>
-                    </button>
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setExpandedVastuPropId(expandedVastuPropId === prop.property_id ? null : prop.property_id);
-                        setExpandedPropId(null);
-                      }}
-                      className={`px-2.5 py-1.5 text-xs font-bold rounded-lg border transition-all flex items-center gap-1 ${
-                        expandedVastuPropId === prop.property_id
-                          ? 'bg-theme-accent-muted text-theme-accent border-theme-accent-border font-bold'
-                          : 'bg-theme-btn border-theme-border text-theme-text-muted hover:text-theme-accent hover:border-theme-accent-border font-bold'
-                      }`}
-                      title="View Vastu Compliance"
-                    >
-                      <Compass className="w-3.5 h-3.5 rotate-45" />
-                      <span>{expandedVastuPropId === prop.property_id ? 'Hide' : 'Vastu'}</span>
-                    </button>
-                    
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleSelectProperty(prop);
-                      }}
-                      className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-all ${
-                        isSelected
-                          ? 'bg-theme-accent text-theme-bg border-theme-accent'
-                          : 'bg-theme-btn border-theme-border text-theme-text hover:bg-theme-btn-hover'
-                      }`}
-                    >
-                      {isSelected ? 'Selected' : 'Add to Compare'}
-                    </button>
-                  </div>
-                </div>
-
-                {expandedPropId === prop.property_id && (
-                  <div className="mt-4 pt-4 border-t border-theme-border/20 animate-fadeIn" onClick={(e) => e.stopPropagation()}>
-                    <POIProximityList property={prop} />
-                  </div>
-                )}
-
-                {expandedVastuPropId === prop.property_id && (
-                  <div className="mt-4 pt-4 border-t border-theme-border/20 animate-fadeIn" onClick={(e) => e.stopPropagation()}>
-                    <VastuCompassWidget property={prop} />
-                  </div>
-                )}
-              </div>
+                prop={prop}
+                isSelected={isSelected}
+                toggleSelectProperty={toggleSelectProperty}
+                activeMapProperty={activeMapProperty}
+                setActiveMapProperty={setActiveMapProperty}
+                activeVastuProperty={activeVastuProperty}
+                setActiveVastuProperty={setActiveVastuProperty}
+                allProperties={properties}
+              />
             );
           })}
+
           {sortedProps.length === 0 && (
             <div className="col-span-2 text-center py-20 bg-theme-card border border-theme-border rounded-2xl font-mono text-xs text-theme-text-muted font-medium">
               No comparative listings found matching active filter toolbar settings.
@@ -600,6 +427,388 @@ export default function PropertiesTab({
           )}
         </div>
       )}
+
+      {/* Map Proximity Modal Overlay */}
+      {activeMapProperty && (
+        <ModalPortal>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setActiveMapProperty(null)}>
+            <div className="w-full max-w-4xl glass-panel rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-theme-border animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+              {/* Header */}
+              <div className="flex justify-between items-center px-6 py-4 border-b border-theme-border bg-theme-input/20">
+                <div>
+                  <h3 className="text-base font-bold text-theme-text-light flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-theme-accent animate-pulse" />
+                    <span>Geo-Proximity Maps & Proximity Audit</span>
+                  </h3>
+                  <p className="text-xs text-theme-text-muted mt-0.5 font-mono">{activeMapProperty.title} • {activeMapProperty.locality}</p>
+                </div>
+                <button 
+                  onClick={() => setActiveMapProperty(null)}
+                  className="p-1.5 rounded-lg bg-theme-btn hover:bg-theme-btn-hover text-theme-text-muted hover:text-theme-text border border-theme-border transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              {/* Scrollable Content */}
+              <div className="flex-grow overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-theme-border scrollbar-track-transparent">
+                <POIProximityList property={activeMapProperty} />
+              </div>
+            </div>
+          </div>
+        </ModalPortal>
+      )}
+
+      {/* Vastu Audit Report Modal Overlay */}
+      {activeVastuProperty && (
+        <ModalPortal>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setActiveVastuProperty(null)}>
+            <div className="w-full max-w-4xl glass-panel rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-theme-border animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+              {/* Header */}
+              <div className="flex justify-between items-center px-6 py-4 border-b border-theme-border bg-theme-input/20">
+                <div>
+                  <h3 className="text-base font-bold text-theme-text-light flex items-center gap-2">
+                    <Compass className="w-5 h-5 text-theme-accent animate-pulse rotate-45" />
+                    <span>Vastu Compliance Audit & Spatial Review</span>
+                  </h3>
+                  <p className="text-xs text-theme-text-muted mt-0.5 font-mono">{activeVastuProperty.title} • {activeVastuProperty.locality}</p>
+                </div>
+                <button 
+                  onClick={() => setActiveVastuProperty(null)}
+                  className="p-1.5 rounded-lg bg-theme-btn hover:bg-theme-btn-hover text-theme-text-muted hover:text-theme-text border border-theme-border transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              {/* Scrollable Content */}
+              <div className="flex-grow overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-theme-border scrollbar-track-transparent">
+                <VastuCompassWidget property={activeVastuProperty} />
+              </div>
+            </div>
+          </div>
+        </ModalPortal>
+      )}
+    </div>
+  );
+}
+
+interface PropertyCardProps {
+  prop: CleanedProperty;
+  isSelected: boolean;
+  toggleSelectProperty: (prop: CleanedProperty) => void;
+  activeMapProperty: CleanedProperty | null;
+  setActiveMapProperty: (prop: CleanedProperty | null) => void;
+  activeVastuProperty: CleanedProperty | null;
+  setActiveVastuProperty: (prop: CleanedProperty | null) => void;
+  allProperties: CleanedProperty[];
+}
+
+function PropertyCard({
+  prop,
+  isSelected,
+  toggleSelectProperty,
+  activeMapProperty,
+  setActiveMapProperty,
+  activeVastuProperty,
+  setActiveVastuProperty,
+  allProperties
+}: PropertyCardProps) {
+  const cardRef = React.useRef<HTMLDivElement | null>(null);
+  const [transform, setTransform] = React.useState('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)');
+  const isDraggingRef = React.useRef(false);
+  const hasDraggedRef = React.useRef(false);
+  const builder = buildersData[prop.builder_or_owner];
+
+  const duplicates = prop.duplicate_group_id
+    ? allProperties.filter(p => p.duplicate_group_id === prop.duplicate_group_id)
+    : [];
+
+  const cheapestProp = duplicates.length > 1
+    ? [...duplicates].sort((a, b) => a.price - b.price)[0]
+    : prop;
+
+  const isCheapest = cheapestProp.property_id === prop.property_id;
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isDraggingRef.current) return;
+    const card = cardRef.current;
+    if (!card) return;
+
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = ((centerY - y) / centerY) * 6; // Max 6 deg tilt
+    const rotateY = ((x - centerX) / centerX) * 6; // Max 6 deg tilt
+
+    setTransform(`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`);
+  };
+
+  const handleMouseLeave = () => {
+    setTransform('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)');
+  };
+
+  const getShadowStyle = () => {
+    if (isSelected) {
+      return 'border-theme-accent shadow-lg shadow-theme-accent-muted';
+    }
+
+    if (prop.vastu_score !== undefined && prop.vastu_score >= 80) {
+      return 'border-theme-border hover:shadow-[0_0_20px_-3px_rgba(16,185,129,0.18)] hover:border-emerald-500/40';
+    }
+
+    if (prop.investment_grade && prop.investment_grade.startsWith('A')) {
+      return 'border-theme-border hover:shadow-[0_0_20px_-3px_rgba(167,139,250,0.18)] hover:border-purple-500/40';
+    }
+
+    return 'border-theme-border hover:shadow-[0_0_20px_-3px_var(--theme-accent-muted)] hover:border-theme-accent/30';
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      draggable={true}
+      onDragStart={(e) => {
+        isDraggingRef.current = true;
+        hasDraggedRef.current = true;
+        e.dataTransfer.setData('text/plain', prop.property_id);
+        e.dataTransfer.effectAllowed = 'copyMove';
+      }}
+      onDragEnd={() => {
+        isDraggingRef.current = false;
+        setTransform('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)');
+        setTimeout(() => {
+          hasDraggedRef.current = false;
+        }, 100);
+      }}
+      onClick={(e) => {
+        if (hasDraggedRef.current) return;
+        toggleSelectProperty(prop);
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        transform,
+        transition: 'transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease, border-color 0.3s ease'
+      }}
+      className={`aceternity-card p-5 rounded-2xl flex flex-col justify-between cursor-pointer border ${getShadowStyle()}`}
+    >
+      <div className="space-y-4">
+        {prop.image_url && (
+          <div className="relative w-full h-44 rounded-xl overflow-hidden border border-theme-border/30 bg-black/10">
+            <img
+              src={prop.image_url}
+              alt={prop.title}
+              className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+              loading="lazy"
+            />
+          </div>
+        )}
+        <div className="flex justify-between items-start gap-4">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-1">
+                <span title="Drag to Compare">
+                  <GripVertical className="w-3.5 h-3.5 text-theme-text-muted/50 cursor-grab active:cursor-grabbing flex-shrink-0" />
+                </span>
+                <a
+                  href={prop.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase flex items-center gap-1 transition-all ${
+                    prop.source === 'MagicBricks'
+                      ? 'bg-purple-950/40 text-purple-400 hover:bg-purple-900/50 border border-purple-900/30'
+                      : prop.source === 'Housing.com'
+                      ? 'bg-red-950/40 text-red-400 hover:bg-red-900/50 border border-red-900/30'
+                      : 'bg-emerald-950/40 text-emerald-400 hover:bg-emerald-900/50 border border-emerald-900/30'
+                  }`}
+                >
+                  <span>{prop.source}</span>
+                  <ExternalLink className="w-2.5 h-2.5" />
+                </a>
+              </div>
+              <span className="text-[10px] text-theme-text-muted font-mono font-medium ml-auto">{prop.property_id}</span>
+            </div>
+            <h4 className="text-sm font-bold text-theme-text-light mt-1.5 line-clamp-1">
+              {prop.title}
+            </h4>
+
+            {/* Price Arbitrage Deal Alert */}
+            {duplicates.length > 1 && (
+              <div className="mt-2 relative group/arbitrage inline-block">
+                {isCheapest ? (
+                  <div className="px-2.5 py-1 rounded-lg bg-emerald-950/20 border border-emerald-900/30 text-emerald-400 text-[10px] font-mono font-bold flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
+                    <span>✓ Best Deal (Cheapest portal)</span>
+                  </div>
+                ) : (
+                  <div className="px-2.5 py-1 rounded-lg bg-amber-950/20 border border-amber-900/30 text-amber-400 text-[10px] font-mono font-bold flex items-center gap-1 animate-pulse">
+                    <AlertTriangle className="w-3 h-3 text-amber-400 flex-shrink-0" />
+                    <span>⚠️ Cheaper on {cheapestProp.source} (-₹{((prop.price - cheapestProp.price) / 100000).toFixed(1)}L)</span>
+                  </div>
+                )}
+                
+                {/* Popover showing all prices */}
+                <div className="absolute top-full left-0 mt-1 z-30 hidden group-hover/arbitrage:block w-48 p-2 rounded-xl glass-panel border border-theme-border text-[9px] font-mono space-y-1.5 shadow-xl animate-in fade-in slide-in-from-top-1 duration-150">
+                  <div className="font-bold text-theme-text-light border-b border-theme-border/20 pb-1 mb-1 uppercase tracking-wider">Portal Price Index</div>
+                  {duplicates.map(d => {
+                    const isSelf = d.property_id === prop.property_id;
+                    return (
+                      <div key={d.property_id} className={`flex justify-between items-center ${isSelf ? 'text-theme-accent font-bold' : 'text-theme-text-muted'}`}>
+                        <span>{d.source} {isSelf && '(This)'}</span>
+                        <span>
+                          {d.transaction_type === 'Rent'
+                            ? `₹${d.price.toLocaleString()}/mo`
+                            : `₹${(d.price / 100000).toFixed(1)}L`
+                          }
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+            <span className="px-2 py-0.5 bg-emerald-950/40 text-emerald-400 border border-emerald-900/30 rounded text-xs font-mono font-bold whitespace-nowrap">
+              {prop.match_score || 90}% Match
+            </span>
+            {prop.investment_grade && (
+              <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold whitespace-nowrap ${
+                prop.investment_grade.startsWith('A') 
+                  ? 'bg-amber-950/40 text-amber-400 border border-amber-900/30'
+                  : prop.investment_grade.startsWith('B')
+                  ? 'bg-blue-950/40 text-blue-400 border border-blue-900/30'
+                  : 'bg-rose-950/40 text-rose-400 border border-rose-900/30'
+              }`} title={`Investment Score: ${prop.investment_score || 0}/100`}>
+                Grade {prop.investment_grade}
+              </span>
+            )}
+            {prop.vastu_score !== undefined && (
+              <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold whitespace-nowrap ${
+                prop.vastu_score >= 80
+                  ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-500/20'
+                  : prop.vastu_score >= 50
+                  ? 'bg-amber-950/40 text-amber-400 border border-amber-500/20'
+                  : 'bg-rose-950/40 text-rose-400 border border-rose-500/20'
+              }`} title={`Vastu Score: ${prop.vastu_score}/100`}>
+                Vastu: {prop.vastu_score}%
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2 py-2 border-y border-theme-border/20 text-center font-mono">
+          <div>
+            <span className="text-[9px] uppercase tracking-wider text-theme-text-muted block">Budget</span>
+            <span className="text-xs font-bold text-theme-text-light">
+              {prop.transaction_type === 'Rent'
+                ? `₹${prop.price.toLocaleString()} / mo`
+                : `₹${(prop.price / 100000).toFixed(1)} L`
+              }
+            </span>
+          </div>
+          <div>
+            <span className="text-[9px] uppercase tracking-wider text-theme-text-muted block">Area</span>
+            <span className="text-xs font-bold text-theme-text-light">{prop.area_sqft} sqft</span>
+          </div>
+          <div>
+            <span className="text-[9px] uppercase tracking-wider text-theme-text-muted block">BHK</span>
+            <span className="text-xs font-bold text-theme-text-light">{prop.bhk} BHK</span>
+          </div>
+        </div>
+
+        <p className="text-xs leading-relaxed text-theme-text-muted italic line-clamp-2">
+          "{prop.recommendation_explanation}"
+        </p>
+
+        {prop.location_scores && (
+          <div className="pt-2.5 pb-1 border-t border-theme-border/10 space-y-2">
+            <div className="text-[10px] uppercase font-bold text-theme-text-muted font-mono tracking-wider">Location Quality Matrix</div>
+            <div className="grid grid-cols-4 gap-2 text-center font-mono">
+              <div className="bg-black/20 p-1.5 rounded-lg border border-theme-border/20">
+                <span className="text-[8px] text-theme-text-muted block">Commute</span>
+                <span className="text-xs font-bold text-theme-text-light">{prop.location_scores.connectivity}%</span>
+              </div>
+              <div className="bg-black/20 p-1.5 rounded-lg border border-theme-border/20">
+                <span className="text-[8px] text-theme-text-muted block">Schools</span>
+                <span className="text-xs font-bold text-theme-text-light">{prop.location_scores.schools}%</span>
+              </div>
+              <div className="bg-black/20 p-1.5 rounded-lg border border-theme-border/20">
+                <span className="text-[8px] text-theme-text-muted block">Lifestyle</span>
+                <span className="text-xs font-bold text-theme-text-light">{prop.location_scores.lifestyle}%</span>
+              </div>
+              <div className="bg-black/20 p-1.5 rounded-lg border border-theme-border/20">
+                <span className="text-[8px] text-theme-text-muted block">Infra</span>
+                <span className="text-xs font-bold text-theme-text-light">{prop.location_scores.infrastructure}%</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="flex justify-between items-center mt-4 pt-4 border-t border-theme-border/20">
+        <div className="min-w-0">
+          <div className="text-xs font-bold text-theme-text truncate">{prop.builder_or_owner}</div>
+          {builder && (
+            <div className="flex items-center gap-1 mt-0.5">
+              <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+              <span className="text-[10px] text-theme-text-muted font-bold font-mono">{(builder.reputation_score * 2).toFixed(1)} / 10</span>
+            </div>
+          )}
+        </div>
+
+        <div className="flex gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveMapProperty(prop);
+            }}
+            className={`px-2.5 py-1.5 text-xs font-bold rounded-lg border transition-all flex items-center gap-1 ${
+              activeMapProperty?.property_id === prop.property_id
+                ? 'bg-theme-accent text-theme-bg border-theme-accent font-bold'
+                : 'bg-theme-btn border-theme-border text-theme-text-muted hover:text-theme-accent hover:border-theme-accent-border font-bold'
+            }`}
+            title="View Proximity Map"
+          >
+            <Compass className="w-3.5 h-3.5" />
+            <span>Map</span>
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveVastuProperty(prop);
+            }}
+            className={`px-2.5 py-1.5 text-xs font-bold rounded-lg border transition-all flex items-center gap-1 ${
+              activeVastuProperty?.property_id === prop.property_id
+                ? 'bg-theme-accent text-theme-bg border-theme-accent font-bold'
+                : 'bg-theme-btn border-theme-border text-theme-text-muted hover:text-theme-accent hover:border-theme-accent-border font-bold'
+            }`}
+            title="View Vastu Compliance"
+          >
+            <Compass className="w-3.5 h-3.5 rotate-45" />
+            <span>Vastu</span>
+          </button>
+          
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleSelectProperty(prop);
+            }}
+            className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-all ${
+              isSelected
+                ? 'bg-theme-accent text-theme-bg border-theme-accent'
+                : 'bg-theme-btn border-theme-border text-theme-text hover:bg-theme-btn-hover'
+            }`}
+          >
+            {isSelected ? 'Selected' : 'Add to Compare'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

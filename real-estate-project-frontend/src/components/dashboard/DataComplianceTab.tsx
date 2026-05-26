@@ -99,7 +99,7 @@ export default function DataComplianceTab() {
       </div>
 
       {/* TOP METRICS GRID */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3 xs:gap-4">
         <div className="aceternity-card p-4 rounded-xl flex items-center gap-3">
           <div className="p-2.5 bg-emerald-950/40 text-emerald-400 border border-emerald-900/30 rounded-lg">
             <Shield className="w-5 h-5" />
@@ -139,9 +139,9 @@ export default function DataComplianceTab() {
       </div>
 
       {/* WORKSPACE CONTENT GRID */}
-      <div className="grid grid-cols-12 gap-6 items-stretch">
+      <div className="grid grid-cols-1 gap-4 xs:gap-5 md:grid-cols-12 md:gap-6 items-stretch">
         {/* SIMULATOR CARD */}
-        <div className="col-span-7 aceternity-card p-6 rounded-2xl flex flex-col justify-between space-y-4">
+        <div className="col-span-1 md:col-span-12 lg:col-span-7 aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl flex flex-col justify-between space-y-4">
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono flex items-center gap-2 border-b border-theme-border/50 pb-3">
               <Globe className="w-4 h-4 text-theme-accent" />
@@ -217,7 +217,7 @@ export default function DataComplianceTab() {
         </div>
 
         {/* AUDIT CHECKLIST */}
-        <div className="col-span-5 aceternity-card p-6 rounded-2xl flex flex-col justify-between space-y-4">
+        <div className="col-span-1 md:col-span-12 lg:col-span-5 aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl flex flex-col justify-between space-y-4">
           <div>
             <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono flex items-center gap-2 border-b border-theme-border/50 pb-3">
               <FileText className="w-4 h-4 text-theme-accent" />
@@ -245,7 +245,7 @@ export default function DataComplianceTab() {
       </div>
 
       {/* PERMITTED DATA SOURCES SECTION */}
-      <div className="aceternity-card p-6 rounded-2xl space-y-4">
+      <div className="aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl space-y-4">
         <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono flex items-center gap-2 border-b border-theme-border/50 pb-3">
           <Globe className="w-4 h-4 text-theme-accent" />
           <span>Ingestion Sources Directory</span>

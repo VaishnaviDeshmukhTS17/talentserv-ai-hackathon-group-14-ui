@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
 @theme {
+  /* Responsive breakpoints: ≤448 default | >448 xs | >732 sm | >932 md | >1112 lg */
+  --breakpoint-xs: 28.0625rem;
+  --breakpoint-sm: 45.8125rem;
+  --breakpoint-md: 58.3125rem;
+  --breakpoint-lg: 69.5625rem;
+
   --color-theme-bg: var(--theme-bg);
   --color-theme-sidebar: var(--theme-sidebar);
   --color-theme-panel: var(--theme-panel);

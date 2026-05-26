@@ -154,22 +154,22 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-transparent flex items-center justify-center p-3 xs:p-4 relative overflow-hidden">
       {/* Aceternity UI Dot Grid Background */}
       <div className="absolute inset-0 aceternity-dots aceternity-mask pointer-events-none z-0"></div>
 
       {/* Background ambient lighting glows */}
-      <div className="absolute top-1/4 left-1/3 w-80 h-80 bg-theme-accent/5 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-theme-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute top-1/4 left-1/3 w-48 xs:w-64 sm:w-80 h-48 xs:h-64 sm:h-80 bg-theme-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-1/3 w-48 xs:w-64 sm:w-80 h-48 xs:h-64 sm:h-80 bg-theme-accent/5 rounded-full blur-3xl pointer-events-none"></div>
 
-      <div className="w-full max-w-md aceternity-card p-8 rounded-2xl relative z-10 shadow-2xl">
+      <div className="w-full max-w-md aceternity-card p-5 xs:p-6 sm:p-8 rounded-2xl relative z-10 shadow-2xl">
         
         {/* Brand logo & header */}
         <div className="text-center mb-8">
           <div className="inline-flex p-3 rounded-xl bg-theme-accent-muted border border-theme-accent-border mb-3 shadow-inner">
             <Sparkles className="w-6 h-6 text-theme-accent" />
           </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight text-shadow-subtle">
+          <h1 className="text-2xl xs:text-3xl font-bold text-white tracking-tight text-shadow-subtle">
             PropIntel
           </h1>
           <p className="text-sm text-theme-text-muted mt-1.5 uppercase tracking-widest font-mono font-medium">

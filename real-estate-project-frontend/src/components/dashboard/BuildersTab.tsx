@@ -35,9 +35,9 @@ export default function BuildersTab({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 xs:gap-5 md:gap-6">
         {filteredBuilders.map((builder) => (
-          <div key={builder.builder_name} className="aceternity-card p-6 rounded-2xl flex flex-col justify-between">
+          <div key={builder.builder_name} className="aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl flex flex-col justify-between">
             <div className="space-y-4">
               <div className="flex justify-between items-center border-b border-theme-border/20 pb-3">
                 <h3 className="text-base font-bold text-theme-text-light flex items-center gap-2">
@@ -85,7 +85,7 @@ export default function BuildersTab({
           </div>
         ))}
         {filteredBuilders.length === 0 && (
-          <div className="col-span-2 text-center py-20 bg-theme-card border border-theme-border rounded-2xl font-mono text-xs text-theme-text-muted font-medium">
+          <div className="col-span-full text-center py-20 bg-theme-card border border-theme-border rounded-2xl font-mono text-xs text-theme-text-muted font-medium">
             No developer records matched search string.
           </div>
         )}

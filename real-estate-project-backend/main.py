@@ -6,12 +6,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import settings
-from db.mongo import close_client
+from db.mongo import close_client, reset_client
 from routes.api import router
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
+    reset_client()
     yield
     await close_client()
 

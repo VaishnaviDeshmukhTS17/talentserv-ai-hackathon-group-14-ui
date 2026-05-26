@@ -38,7 +38,6 @@ export default function TrendsTab({
     { name: 'Negative', value: Math.round((1 - sentimentScore) * 60) },
     { name: 'Neutral', value: Math.round((1 - sentimentScore) * 40) }
   ];
-  const SENTIMENT_COLORS = ['#10b981', '#ef4444', '#64748b']; // green, red, gray
 
   return (
     <div className="space-y-6">
@@ -47,7 +46,7 @@ export default function TrendsTab({
         <p className="text-sm text-theme-text-muted mt-0.5">Appreciation histories and social sentiment clouds for active locality: {currentLocality}</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="aceternity-card p-6 rounded-2xl space-y-4">
           <div>
             <h3 className="text-sm font-bold text-theme-text-light uppercase tracking-widest font-mono flex items-center gap-2">
@@ -59,21 +58,58 @@ export default function TrendsTab({
 
           <div className="h-56 w-full text-xs font-mono">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={trendInfo.quarterly_price_history} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+              <AreaChart data={trendInfo.quarterly_price_history} margin={{ top: 15, right: 10, left: -15, bottom: 0 }}>
                 <defs>
+                  {/* Glowing line drop shadow filter */}
+                  <filter id="chart-glow" x="-10%" y="-10%" width="120%" height="120%">
+                    <feDropShadow dx="0" dy="6" stdDeviation="5" floodColor="var(--theme-accent)" floodOpacity="0.25" />
+                  </filter>
                   <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--theme-accent)" stopOpacity={0.4}/>
+                    <stop offset="5%" stopColor="var(--theme-accent)" stopOpacity={0.35}/>
                     <stop offset="95%" stopColor="var(--theme-accent)" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--theme-border)" vertical={false} />
-                <XAxis dataKey="quarter" stroke="var(--theme-text-muted)" tickLine={false} axisLine={false} />
-                <YAxis stroke="var(--theme-text-muted)" tickLine={false} axisLine={false} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: 'var(--theme-bg)', borderColor: 'var(--theme-border)', borderRadius: '8px', fontSize: '11px' }}
-                  labelStyle={{ color: 'var(--theme-text)', fontWeight: 'bold' }}
+                <CartesianGrid strokeDasharray="4 4" stroke="rgba(255,255,255,0.03)" vertical={false} />
+                <XAxis 
+                  dataKey="quarter" 
+                  stroke="rgba(255,255,255,0.35)" 
+                  tickLine={false} 
+                  axisLine={false} 
+                  dy={10}
                 />
-                <Area type="monotone" dataKey="avg_price_per_sqft" stroke="var(--theme-accent)" fillOpacity={1} fill="url(#colorPrice)" strokeWidth={2} />
+                <YAxis 
+                  stroke="rgba(255,255,255,0.35)" 
+                  tickLine={false} 
+                  axisLine={false} 
+                  dx={-5}
+                  tickFormatter={(val) => `₹${(val/1000).toFixed(1)}k`}
+                />
+                <Tooltip
+                  cursor={{ stroke: 'rgba(167, 139, 250, 0.15)', strokeWidth: 1 }}
+                  contentStyle={{ 
+                    backgroundColor: 'rgba(15, 23, 42, 0.75)', 
+                    backdropFilter: 'blur(8px)', 
+                    borderColor: 'rgba(167, 139, 250, 0.25)', 
+                    borderRadius: '12px', 
+                    padding: '10px 14px', 
+                    border: '1px solid rgba(255,255,255,0.08)', 
+                    boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)',
+                    fontSize: '11px' 
+                  }}
+                  labelStyle={{ color: 'var(--theme-text-light)', fontWeight: 'bold' }}
+                  itemStyle={{ color: 'var(--theme-accent)', fontWeight: 'bold', fontFamily: 'monospace' }}
+                  formatter={(value: any) => [`₹${Number(value).toLocaleString()} / sqft`, 'Average Price']}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="avg_price_per_sqft" 
+                  stroke="var(--theme-accent)" 
+                  fillOpacity={1} 
+                  fill="url(#colorPrice)" 
+                  strokeWidth={3} 
+                  filter="url(#chart-glow)"
+                  activeDot={{ r: 6, strokeWidth: 2, stroke: 'var(--theme-accent)', fill: 'var(--theme-bg)' }}
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -96,18 +132,36 @@ export default function TrendsTab({
             <div className="w-32 h-32 relative flex-shrink-0">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
+                  <defs>
+                    <linearGradient id="sentiment-pos-grad-trends" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#10b981" />
+                      <stop offset="100%" stopColor="#059669" />
+                    </linearGradient>
+                    <linearGradient id="sentiment-neg-grad-trends" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#ef4444" />
+                      <stop offset="100%" stopColor="#b91c1c" />
+                    </linearGradient>
+                    <linearGradient id="sentiment-neu-grad-trends" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#64748b" />
+                      <stop offset="100%" stopColor="#475569" />
+                    </linearGradient>
+                  </defs>
                   <Pie
                     data={sentimentChartData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={35}
-                    outerRadius={45}
-                    paddingAngle={3}
+                    innerRadius={34}
+                    outerRadius={44}
+                    paddingAngle={4}
+                    cornerRadius={5}
                     dataKey="value"
                   >
-                    {sentimentChartData.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={SENTIMENT_COLORS[index % SENTIMENT_COLORS.length]} />
-                    ))}
+                    {sentimentChartData.map((_, index) => {
+                      const gradientIds = ['url(#sentiment-pos-grad-trends)', 'url(#sentiment-neg-grad-trends)', 'url(#sentiment-neu-grad-trends)'];
+                      return (
+                        <Cell key={`cell-${index}`} fill={gradientIds[index % gradientIds.length]} />
+                      );
+                    })}
                   </Pie>
                 </PieChart>
               </ResponsiveContainer>
@@ -117,24 +171,39 @@ export default function TrendsTab({
               </div>
             </div>
 
-            <div className="flex-1 space-y-2 text-xs font-semibold">
-              <div className="flex justify-between items-center">
-                <span className="text-theme-text-muted flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#10b981]"></span> Positive
-                </span>
-                <span className="font-semibold text-theme-text-light font-mono">{(sentimentScore * 100).toFixed(0)}%</span>
+            <div className="flex-1 space-y-2.5 text-xs font-semibold">
+              <div className="space-y-1">
+                <div className="flex justify-between items-center">
+                  <span className="text-theme-text-muted flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span> Positive
+                  </span>
+                  <span className="font-bold text-theme-text-light font-mono">{(sentimentScore * 100).toFixed(0)}%</span>
+                </div>
+                <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-[#10b981] to-[#34d399] rounded-full" style={{ width: `${(sentimentScore * 100).toFixed(0)}%` }} />
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-theme-text-muted flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#ef4444]"></span> Negative
-                </span>
-                <span className="font-semibold text-theme-text-light font-mono">{Math.round((1 - sentimentScore) * 60)}%</span>
+              <div className="space-y-1">
+                <div className="flex justify-between items-center">
+                  <span className="text-theme-text-muted flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#ef4444]"></span> Negative
+                  </span>
+                  <span className="font-bold text-theme-text-light font-mono">{Math.round((1 - sentimentScore) * 60)}%</span>
+                </div>
+                <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-[#ef4444] to-[#f87171] rounded-full" style={{ width: `${Math.round((1 - sentimentScore) * 60)}%` }} />
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-theme-text-muted flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#64748b]"></span> Neutral
-                </span>
-                <span className="font-semibold text-theme-text-light font-mono">{Math.round((1 - sentimentScore) * 40)}%</span>
+              <div className="space-y-1">
+                <div className="flex justify-between items-center">
+                  <span className="text-theme-text-muted flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#64748b]"></span> Neutral
+                  </span>
+                  <span className="font-bold text-theme-text-light font-mono">{Math.round((1 - sentimentScore) * 40)}%</span>
+                </div>
+                <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-[#64748b] to-[#94a3b8] rounded-full" style={{ width: `${Math.round((1 - sentimentScore) * 40)}%` }} />
+                </div>
               </div>
             </div>
           </div>

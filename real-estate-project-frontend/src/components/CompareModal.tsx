@@ -11,12 +11,12 @@ export default function CompareModal({ properties, onClose }: CompareModalProps)
   if (properties.length === 0) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 xs:p-4 bg-black/75 backdrop-blur-sm">
       <div className="w-full max-w-5xl glass-panel rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="flex justify-between items-center px-6 py-4 border-b border-theme-border">
+        <div className="flex justify-between items-center px-4 xs:px-6 py-3 xs:py-4 border-b border-theme-border gap-3">
           <div>
-            <h2 className="text-lg font-semibold text-theme-text-light">Compare Properties</h2>
+            <h2 className="text-base xs:text-lg font-semibold text-theme-text-light">Compare Properties</h2>
             <p className="text-xs text-theme-text-muted">Side-by-side specification evaluation</p>
           </div>
           <button 
@@ -28,7 +28,7 @@ export default function CompareModal({ properties, onClose }: CompareModalProps)
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-x-auto p-6">
+        <div className="flex-1 overflow-x-auto p-4 xs:p-6">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-theme-border">

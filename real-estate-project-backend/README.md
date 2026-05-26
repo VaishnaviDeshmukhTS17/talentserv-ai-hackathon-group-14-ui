@@ -49,7 +49,7 @@ cp .env.example .env
 Edit `.env`:
 
 ```env
-MONGODB_URI=mongodb+srv://atulmaurya_db_user:YOUR_PASSWORD@talentservaihackathon.gmdw6zs.mongodb.net/propintel?retryWrites=true&w=majority&appName=TalentServAIHackathon
+MONGODB_URI=mongodb+srv://db_user:YOUR_PASSWORD@talentservaihackathon.gmdw6zs.mongodb.net/propintel?retryWrites=true&w=majority&appName=TalentServAIHackathon
 MONGODB_DB_NAME=propintel
 OPENAI_API_KEY=sk-your-key
 OPENAI_MODEL=gpt-4o-mini

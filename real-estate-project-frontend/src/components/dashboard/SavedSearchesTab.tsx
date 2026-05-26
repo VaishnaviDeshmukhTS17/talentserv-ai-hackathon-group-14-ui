@@ -19,17 +19,17 @@ export default function SavedSearchesTab({
   setManualOverrides
 }: SavedSearchesTabProps) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 xs:space-y-5 md:space-y-6">
       <div>
-        <h2 className="text-xl font-bold text-theme-text-light tracking-tight">Saved Searches</h2>
-        <p className="text-sm text-theme-text-muted mt-0.5">Manage and re-run your saved search configurations</p>
+        <h2 className="text-lg xs:text-xl font-bold text-theme-text-light tracking-tight">Saved Searches</h2>
+        <p className="text-xs xs:text-sm text-theme-text-muted mt-0.5">Manage and re-run your saved search configurations</p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3 xs:space-y-4">
         {savedSearches.map((item) => (
           <div 
             key={item.id}
-            className="aceternity-card p-5 rounded-xl flex items-center justify-between gap-6 hover:border-theme-accent-border transition-all"
+            className="aceternity-card p-4 xs:p-5 rounded-xl flex flex-col xs:flex-row xs:items-center xs:justify-between gap-3 xs:gap-6 hover:border-theme-accent-border transition-all"
           >
             <div 
               onClick={() => {

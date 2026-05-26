@@ -72,10 +72,20 @@ export default function ComparisonsTab({
             <Trash2 className="w-3.5 h-3.5" />
             <span>Clear Selection</span>
           </button>
+          <button
+            onClick={() => {
+              setSelectedProperties([]);
+              setActiveTab('Properties');
+            }}
+            className="px-3 py-1.5 bg-theme-btn hover:bg-theme-btn-hover border border-theme-border text-theme-text-light text-xs font-mono font-bold rounded-lg flex items-center gap-1.5 transition-all"
+          >
+            <X className="w-3.5 h-3.5" />
+            <span>Close</span>
+          </button>
         </div>
       </div>
 
-      <div className="aceternity-card p-6 rounded-2xl overflow-x-auto">
+      <div className="aceternity-card p-4 xs:p-5 md:p-6 rounded-2xl overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-theme-border">

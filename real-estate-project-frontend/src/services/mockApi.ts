@@ -67,9 +67,45 @@ export function normalizeParsedRequirement(req: Partial<ParsedRequirement>): Par
   const tx = String(out.transaction_type || 'Buy').toLowerCase();
   out.transaction_type = tx === 'rent' || tx === 'rental' || tx === 'lease' ? 'Rent' : 'Buy';
 
-  if (out.city) {
-    const city = out.city.toLowerCase();
-    out.city = city === 'bangalore' || city === 'bengaluru' ? 'Bangalore' : out.city;
+  // Normalize locality first
+  let locality = out.locality ? String(out.locality).trim() : '';
+  if (locality && (locality.toLowerCase() === 'none' || locality.toLowerCase() === 'null')) {
+    out.locality = '';
+  } else if (locality) {
+    const locLower = locality.toLowerCase();
+    let normalizedLoc = locality;
+    if (locLower.includes('hinja') || locLower.includes('hinje')) normalizedLoc = 'Hinjewadi';
+    else if (locLower.includes('wakad')) normalizedLoc = 'Wakad';
+    else if (locLower.includes('baner')) normalizedLoc = 'Baner';
+    else if (locLower.includes('hadapsar') || locLower.includes('hadaps')) normalizedLoc = 'Hadapsar';
+    else if (locLower.includes('kharadi') || locLower.includes('khara') || locLower.includes('kharra')) normalizedLoc = 'Kharadi';
+    else if (locLower.includes('viman')) normalizedLoc = 'Viman Nagar';
+    else if (locLower.includes('kothrud') || locLower.includes('koth') || locLower === 'kthrud') normalizedLoc = 'Kothrud';
+    else if (locLower.includes('kalyani')) normalizedLoc = 'Kalyani Nagar';
+    else if (locLower.includes('whitefield')) normalizedLoc = 'Whitefield';
+    else if (locLower.includes('indiranagar') || locLower.includes('indira')) normalizedLoc = 'Indiranagar';
+    else if (locLower.includes('koramangala') || locLower.includes('kora')) normalizedLoc = 'Koramangala';
+    
+    out.locality = normalizedLoc;
+
+    // Deduce correct city based on known localities
+    const puneLocalities = ['hinjewadi', 'wakad', 'baner', 'hadapsar', 'kharadi', 'viman nagar', 'kothrud', 'kalyani nagar'];
+    const bangaloreLocalities = ['whitefield', 'indiranagar', 'koramangala'];
+    const finalLocLower = normalizedLoc.toLowerCase();
+    if (puneLocalities.includes(finalLocLower)) {
+      out.city = 'Pune';
+    } else if (bangaloreLocalities.includes(finalLocLower)) {
+      out.city = 'Bangalore';
+    }
+  }
+
+  // Handle city default / normalization
+  const cityRaw = out.city ? String(out.city).trim() : '';
+  if (!cityRaw || cityRaw.toLowerCase() === 'none' || cityRaw.toLowerCase() === 'null') {
+    out.city = 'Pune';
+  } else {
+    const city = cityRaw.toLowerCase();
+    out.city = city === 'bangalore' || city === 'bengaluru' ? 'Bangalore' : (city === 'pune' ? 'Pune' : cityRaw);
   }
 
   if (out.status_preference) {
@@ -93,7 +129,7 @@ export function normalizeParsedRequirement(req: Partial<ParsedRequirement>): Par
 export function mockParseQuery(query: string): ParsedRequirement {
   const lowercase = query.toLowerCase();
   let city = 'Pune';
-  let locality = 'Hinjewadi';
+  let locality = '';
   let transaction_type: 'Buy' | 'Rent' = 'Buy';
   let bhk: number | null = null;
   let budget_max: number | null = null;
@@ -101,18 +137,43 @@ export function mockParseQuery(query: string): ParsedRequirement {
   let status_preference: 'Ready to Move' | 'Under Construction' | null = null;
   let preference_notes = 'Standard residential search.';
 
-  if (lowercase.includes('bangalore') || lowercase.includes('bengaluru') || lowercase.includes('whitefield') || lowercase.includes('indiranagar')) {
-    city = 'Bangalore';
-  }
-
   if (lowercase.includes('hinje') || lowercase.includes('hinja')) {
     locality = 'Hinjewadi';
   } else if (lowercase.includes('wakad')) {
     locality = 'Wakad';
+  } else if (lowercase.includes('baner')) {
+    locality = 'Baner';
+  } else if (lowercase.includes('hadapsar') || lowercase.includes('hadaps')) {
+    locality = 'Hadapsar';
+  } else if (lowercase.includes('kharadi') || lowercase.includes('khara')) {
+    locality = 'Kharadi';
+  } else if (lowercase.includes('viman')) {
+    locality = 'Viman Nagar';
+  } else if (lowercase.includes('kothrud') || lowercase.includes('koth') || lowercase.includes('kthrud')) {
+    locality = 'Kothrud';
+  } else if (lowercase.includes('kalyani')) {
+    locality = 'Kalyani Nagar';
   } else if (lowercase.includes('whitefield')) {
     locality = 'Whitefield';
   } else if (lowercase.includes('indiranagar')) {
     locality = 'Indiranagar';
+  } else if (lowercase.includes('koramangala') || lowercase.includes('kora')) {
+    locality = 'Koramangala';
+  }
+
+  if (locality) {
+    const puneLocalities = ['hinjewadi', 'wakad', 'baner', 'hadapsar', 'kharadi', 'viman nagar', 'kothrud', 'kalyani nagar'];
+    const bangaloreLocalities = ['whitefield', 'indiranagar', 'koramangala'];
+    const locLower = locality.toLowerCase();
+    if (puneLocalities.includes(locLower)) {
+      city = 'Pune';
+    } else if (bangaloreLocalities.includes(locLower)) {
+      city = 'Bangalore';
+    }
+  } else {
+    if (lowercase.includes('bangalore') || lowercase.includes('bengaluru') || lowercase.includes('whitefield') || lowercase.includes('indiranagar') || lowercase.includes('koramangala')) {
+      city = 'Bangalore';
+    }
   }
 
   if (lowercase.includes('rent') || lowercase.includes('rental')) transaction_type = 'Rent';

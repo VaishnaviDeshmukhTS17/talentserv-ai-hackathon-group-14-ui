@@ -108,3 +108,17 @@ export async function isBackendAiActive(): Promise<boolean> {
     return false;
   }
 }
+
+export async function vastuExplain(
+  propertyName: string,
+  roomName: string,
+  direction: string,
+  isCompliant: boolean,
+  remedy?: string
+): Promise<{ explanation: string }> {
+  return request<{ explanation: string }>('/api/vastu/explain', {
+    method: 'POST',
+    body: JSON.stringify({ propertyName, roomName, direction, isCompliant, remedy }),
+  });
+}
+

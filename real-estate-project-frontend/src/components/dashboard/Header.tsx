@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Bell, Settings, LogOut } from 'lucide-react';
+import { Bell, Settings, LogOut, Menu } from 'lucide-react';
 
 interface HeaderProps {
   user: { name?: string; email?: string } | null;
@@ -8,6 +8,7 @@ interface HeaderProps {
   logout: () => void;
   setActiveTab: (tab: string) => void;
   editPersona: string;
+  onMenuClick?: () => void;
 }
 
 export default function Header({
@@ -16,26 +17,41 @@ export default function Header({
   setTheme,
   logout,
   setActiveTab,
-  editPersona
+  editPersona,
+  onMenuClick,
 }: HeaderProps) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [hasNewNotifications, setHasNewNotifications] = useState(true);
 
   return (
-    <header className="px-8 py-5 border-b border-theme-border bg-theme-bg/25 backdrop-blur-md flex justify-between items-center z-20">
-      <div>
-        <h2 className="text-xl font-bold text-theme-text-light tracking-tight">Welcome back, {user?.name || 'Rohan'}! 👋</h2>
-        <p className="text-sm text-theme-text-muted mt-0.5">Here's an overview of your property search intelligence</p>
+    <header className="px-3 py-3 xs:px-4 xs:py-4 sm:px-6 md:px-8 md:py-5 border-b border-theme-border bg-theme-bg/25 backdrop-blur-md flex flex-wrap gap-3 sm:gap-4 justify-between items-center z-20">
+      <div className="flex items-start gap-3 min-w-0 flex-1">
+        <button
+          type="button"
+          onClick={onMenuClick}
+          className="lg:hidden p-2 rounded-xl bg-theme-btn hover:bg-theme-btn-hover border border-theme-border text-theme-text-muted shrink-0"
+          aria-label="Open menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <div className="min-w-0">
+          <h2 className="text-base xs:text-lg md:text-xl font-bold text-theme-text-light tracking-tight truncate">
+            Welcome back, {user?.name || 'Rohan'}! 👋
+          </h2>
+          <p className="text-xs sm:text-sm text-theme-text-muted mt-0.5 hidden xs:block line-clamp-2">
+            Here's an overview of your property search intelligence
+          </p>
+        </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 xs:gap-3 sm:gap-4 shrink-0">
         {/* Theme Selector Dropdown */}
         <div className="relative">
           <select
             value={theme}
             onChange={(e) => setTheme(e.target.value)}
-            className="appearance-none pl-3 pr-8 py-2 bg-theme-btn hover:bg-theme-btn-hover border border-theme-border rounded-xl text-sm font-semibold text-theme-text focus:outline-none cursor-pointer transition-all"
+            className="appearance-none pl-2 xs:pl-3 pr-7 xs:pr-8 py-1.5 xs:py-2 max-w-[9rem] xs:max-w-none bg-theme-btn hover:bg-theme-btn-hover border border-theme-border rounded-xl text-xs xs:text-sm font-semibold text-theme-text focus:outline-none cursor-pointer transition-all"
           >
             <option value="charcoal-grey">⚙️ Charcoal Grey</option>
             <option value="light-violet">🔮 Light Violet</option>
@@ -66,7 +82,7 @@ export default function Header({
           </button>
 
           {showNotifications && (
-            <div className="absolute right-0 mt-2.5 w-80 glass-panel rounded-xl shadow-2xl p-4 z-50 border border-theme-border animate-in fade-in slide-in-from-top-3 duration-200">
+            <div className="absolute right-0 mt-2.5 w-[min(20rem,calc(100vw-1.5rem))] glass-panel rounded-xl shadow-2xl p-4 z-50 border border-theme-border animate-in fade-in slide-in-from-top-3 duration-200">
               <div className="flex justify-between items-center border-b border-theme-border/20 pb-2 mb-3">
                 <span className="text-xs uppercase font-bold tracking-wider text-theme-text-muted font-mono">Notifications</span>
                 <button 
@@ -105,7 +121,7 @@ export default function Header({
           </button>
 
           {showProfileDropdown && (
-            <div className="absolute right-0 mt-2.5 w-64 glass-panel rounded-xl shadow-2xl p-4 z-50 border border-theme-border animate-in fade-in slide-in-from-top-3 duration-200">
+            <div className="absolute right-0 mt-2.5 w-[min(16rem,calc(100vw-1.5rem))] glass-panel rounded-xl shadow-2xl p-4 z-50 border border-theme-border animate-in fade-in slide-in-from-top-3 duration-200">
               <div className="border-b border-theme-border/20 pb-3 mb-3">
                 <div className="text-sm font-bold text-theme-text-light truncate">{user?.name || 'Rohan Mallick'}</div>
                 <div className="text-xs text-theme-text-muted truncate font-mono mt-0.5">{user?.email || 'rohan.mallick@propintel.com'}</div>

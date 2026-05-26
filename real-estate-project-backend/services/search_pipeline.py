@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from typing import Any
 
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -27,11 +28,19 @@ from services.openai_service import (
 
 def _calculate_match_score(prop: dict[str, Any], req: dict[str, Any]) -> int:
     score = 100
-    if prop.get("locality", "").lower() != req.get("locality", "").lower():
+    prop_loc = str(prop.get("locality") or "").strip().lower()
+    req_loc = str(req.get("locality") or "").strip().lower()
+    if prop_loc != req_loc:
         score -= 30
     req_bhk = req.get("bhk")
-    if req_bhk is not None and prop.get("bhk") != req_bhk:
-        score -= 20 * abs(prop.get("bhk", 0) - req_bhk)
+    if req_bhk is not None:
+        try:
+            req_bhk_val = int(req_bhk)
+            prop_bhk_val = int(prop.get("bhk") or 0)
+            if prop_bhk_val != req_bhk_val:
+                score -= 20 * abs(prop_bhk_val - req_bhk_val)
+        except (ValueError, TypeError):
+            pass
     budget = req.get("budget_max")
     price = prop.get("price", 0)
     if budget and price > budget:
@@ -42,7 +51,7 @@ def _calculate_match_score(prop: dict[str, Any], req: dict[str, Any]) -> int:
         score += min(5, round(savings * 10))
     status_pref = req.get("status_preference")
     if status_pref:
-        is_ready = "ready" in prop.get("status", "").lower()
+        is_ready = "ready" in str(prop.get("status") or "").lower()
         wants_ready = status_pref == "Ready to Move"
         if is_ready != wants_ready:
             score -= 15
@@ -83,12 +92,31 @@ async def execute_search(
 ) -> dict[str, Any]:
     overrides = overrides or {}
 
-    base = await parse_query_with_ai(query)
-    if not base:
-        base = mock_parse_query(query)
-    parsed = normalize_parsed_requirement({**base, **overrides})
+    # Bypass AI parsing only if overrides contains the parsed filters from chat/UI
+    # (i.e. overrides contains 'locality', 'bhk', 'budget_max', 'status_preference', or 'vastu_compliant_only')
+    has_parsed_filters = overrides and any(
+        k in overrides for k in ("locality", "bhk", "budget_max", "status_preference", "vastu_compliant_only")
+    )
 
-    raw_props = await fetch_all_properties(db)
+    async def get_parsed_req():
+        if has_parsed_filters:
+            return overrides
+        base = await parse_query_with_ai(query)
+        if not base:
+            base = mock_parse_query(query)
+        return base
+
+    # Fetch database collections and parse query concurrently
+    raw_props, builders_map, sentiment_map, trends_map, pois, base_parsed = await asyncio.gather(
+        fetch_all_properties(db),
+        fetch_builders_map(db),
+        fetch_sentiment_map(db),
+        fetch_trends_map(db),
+        fetch_pois(db),
+        get_parsed_req(),
+    )
+    parsed = normalize_parsed_requirement({**base_parsed, **overrides})
+
     cleaned = clean_properties_list(raw_props)
 
     async def dup_checker(a: dict[str, Any], b: dict[str, Any]) -> bool:
@@ -96,22 +124,19 @@ async def execute_search(
 
     deduped = await deduplicate_properties(cleaned, dup_checker if settings.openai_configured else None)
 
-    builders_map = await fetch_builders_map(db)
-    sentiment_map = await fetch_sentiment_map(db)
-    trends_map = await fetch_trends_map(db)
-    pois = await fetch_pois(db)
-
     filtered = [
         p
         for p in deduped
-        if p.get("city", "").lower() == parsed["city"].lower()
-        and str(p.get("transaction_type", "")).lower() == str(parsed["transaction_type"]).lower()
+        if str(p.get("city") or "").lower() == str(parsed.get("city") or "Pune").lower()
+        and str(p.get("transaction_type") or "").lower() == str(parsed.get("transaction_type") or "Buy").lower()
         and (not parsed.get("vastu_compliant_only") or (p.get("vastu_score") or 0) >= 80)
     ]
 
-    if parsed.get("locality"):
-        if any(p.get("locality", "").lower() == parsed["locality"].lower() for p in filtered):
-            filtered = [p for p in filtered if p.get("locality", "").lower() == parsed["locality"].lower()]
+    parsed_locality = parsed.get("locality")
+    if parsed_locality:
+        parsed_loc_lower = str(parsed_locality).lower()
+        if any(str(p.get("locality") or "").lower() == parsed_loc_lower for p in filtered):
+            filtered = [p for p in filtered if str(p.get("locality") or "").lower() == parsed_loc_lower]
 
     scored: list[dict[str, Any]] = []
     for prop in filtered:
@@ -155,13 +180,41 @@ async def execute_search(
 
     scored.sort(key=lambda p: p.get("match_score", 0), reverse=True)
 
+    loc = parsed.get("locality", "")
+    reviews = MOCK_REVIEWS.get(loc) or [
+        f"Nice residential area in {loc}.",
+        f"Road infrastructure in {loc} has improved.",
+    ]
+
+    # Prepare explanation tasks for the top 3 recommendations in parallel to save time.
+    explanation_tasks = []
+    for idx, prop in enumerate(scored):
+        if settings.openai_configured and idx < 3:
+            explanation_tasks.append(generate_ai_explanation(prop, parsed))
+        else:
+            explanation_tasks.append(None)
+
+    # Gather explanations and sentiment analysis concurrently
+    explanation_indices = [i for i, t in enumerate(explanation_tasks) if t is not None]
+    active_tasks = [explanation_tasks[i] for i in explanation_indices]
+    
+    # Append the sentiment analysis task
+    sentiment_task_idx = len(active_tasks)
+    active_tasks.append(analyze_sentiment(reviews))
+
+    results = await asyncio.gather(*active_tasks)
+
+    explanations = [None] * len(scored)
+    for idx, orig_idx in enumerate(explanation_indices):
+        explanations[orig_idx] = results[idx]
+
+    dynamic = results[sentiment_task_idx]
+
     final: list[dict[str, Any]] = []
     for idx, prop in enumerate(scored):
         builder = builders_map.get(prop.get("builder_or_owner", ""))
         sentiment = sentiment_map.get(prop.get("locality", ""))
-        explanation = None
-        if settings.openai_configured and idx < 3:
-            explanation = await generate_ai_explanation(prop, parsed)
+        explanation = explanations[idx]
         if not explanation:
             explanation = _generate_explanation(prop, parsed, builder, sentiment)
         final.append({**prop, "recommendation_explanation": explanation})
@@ -174,23 +227,17 @@ async def execute_search(
         bname = prop.get("builder_or_owner")
         if bname and bname in builders_map:
             builders[bname] = builders_map[bname]
-        loc = prop.get("locality")
-        if loc and loc in sentiment_map:
-            sentiments[loc] = sentiment_map[loc]
-        if loc and loc in trends_map:
-            trends[loc] = trends_map[loc]
+        loc_prop = prop.get("locality")
+        if loc_prop and loc_prop in sentiment_map:
+            sentiments[loc_prop] = sentiment_map[loc_prop]
+        if loc_prop and loc_prop in trends_map:
+            trends[loc_prop] = trends_map[loc_prop]
 
-    loc = parsed.get("locality", "")
     if loc in sentiment_map:
         sentiments[loc] = sentiment_map[loc]
     if loc in trends_map:
         trends[loc] = trends_map[loc]
 
-    reviews = MOCK_REVIEWS.get(loc) or [
-        f"Nice residential area in {loc}.",
-        f"Road infrastructure in {loc} has improved.",
-    ]
-    dynamic = await analyze_sentiment(reviews)
     if dynamic:
         sentiments[loc] = {
             "locality_name": loc,

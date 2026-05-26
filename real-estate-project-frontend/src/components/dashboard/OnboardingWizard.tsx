@@ -28,8 +28,8 @@ export default function OnboardingWizard({
   if (!showOnboarding) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
-      <div className="w-full max-w-lg bg-theme-bg/60 border border-theme-border backdrop-blur-xl p-8 rounded-2xl shadow-2xl relative flex flex-col justify-between min-h-[520px] animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center z-50 p-3 xs:p-4 animate-in fade-in duration-300">
+      <div className="w-full max-w-lg bg-theme-bg/60 border border-theme-border backdrop-blur-xl p-5 xs:p-6 sm:p-8 rounded-2xl shadow-2xl relative flex flex-col justify-between min-h-[min(520px,90vh)] max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200">
         
         {/* Step Content */}
         <div className="flex-1 flex flex-col justify-center">
@@ -92,7 +92,7 @@ export default function OnboardingWizard({
                 <h3 className="text-lg font-bold text-theme-text-light tracking-tight">Select Workspace Style</h3>
                 <p className="text-xs text-theme-text-muted mt-0.5">Choose your default layout color theme (can change anytime)</p>
               </div>
-              <div className="grid grid-cols-2 gap-3 pt-3">
+              <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 pt-3">
                 <button 
                   onClick={() => setTheme('charcoal-grey')}
                   className={`p-3.5 rounded-xl border text-left space-y-2 transition-all cursor-pointer ${theme === 'charcoal-grey' ? 'bg-theme-accent-muted border-theme-accent text-theme-text-light shadow-lg' : 'bg-theme-card border-theme-border text-theme-text-muted hover:border-theme-border-hover'}`}

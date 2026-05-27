@@ -203,6 +203,14 @@ After deploy, add production frontend URL to backend `CORS_ORIGINS`.
 
 ## Documentation
 
+- [Final submission index](./SUBMISSION_INDEX.md)
+- [Groomed requirements](./GROOMED_REQUIREMENTS.md)
+- [Implementation plan](./IMPLEMENTATION_PLAN.md)
+- [Architecture](./ARCHITECTURE.md)
+- [Test plan](./TEST_PLAN.md)
+- [Critical review](./CRITICAL_REVIEW.md)
+- [Deployment details](./DEPLOYMENT_DETAILS.md)
+- [Demo video guide](./DEMO_VIDEO_GUIDE.md)
 - [Frontend README](./real-estate-project-frontend/README.md)
 - [Backend README](./real-estate-project-backend/README.md)
 - [Agentic programming evidence](./AGENTIC_EVIDENCE.md)

@@ -93,6 +93,18 @@
   --theme-shadow: rgba(124, 58, 237, 0.08);
   --theme-text-light: #4c1d95;
   --theme-dot-color: rgba(124, 58, 237, 0.08);
+  --color-emerald-400: #444;
+  --color-amber-400: #444;
+  --color-blue-400: #444;
+  --color-purple-400: #444;
+}
+
+/* Light violet: force readable text on light background (vars alone can lose to @theme :root) */
+[data-theme="light-violet"] .text-emerald-400,
+[data-theme="light-violet"] .text-amber-400,
+[data-theme="light-violet"] .text-blue-400,
+[data-theme="light-violet"] .text-purple-400 {
+  color: #444;
 }
 
 [data-theme="sapphire-dark"] {

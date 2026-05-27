@@ -47,23 +47,11 @@ export default function AmbientBackground({ theme }: AmbientBackgroundProps) {
           { r: 16, g: 185, b: 129 },  // mint
           { r: 6, g: 95, b: 70 }      // forest green
         ];
-      case 'light-violet':
-        return [
-          { r: 139, g: 92, b: 246 },  // violet
-          { r: 192, g: 132, b: 252 }, // lavender
-          { r: 232, g: 121, b: 249 }  // magenta
-        ];
-      case 'deep-navy':
-        return [
-          { r: 16, g: 185, b: 129 },  // mint green / emerald
-          { r: 29, g: 78, b: 216 },   // deep navy
-          { r: 56, g: 189, b: 248 }   // sky blue
-        ];
       case 'navy-light':
         return [
           { r: 30, g: 58, b: 138 },   // dark navy
-          { r: 147, g: 197, b: 253 }, // soft sky
-          { r: 16, g: 185, b: 129 }   // emerald
+          { r: 59, g: 130, b: 246 },  // trusting blue
+          { r: 147, g: 197, b: 253 }  // soft sky blue
         ];
       default:
         return [

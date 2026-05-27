@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Bell, Settings, LogOut, Menu } from 'lucide-react';
 
 interface HeaderProps {
@@ -23,6 +23,24 @@ export default function Header({
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [hasNewNotifications, setHasNewNotifications] = useState(true);
+
+  const notificationRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setShowProfileDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="px-3 py-3 xs:px-4 xs:py-4 sm:px-6 md:px-8 md:py-5 border-b border-theme-border bg-theme-bg/25 backdrop-blur-md flex flex-wrap gap-3 sm:gap-4 justify-between items-center z-20">
@@ -54,11 +72,9 @@ export default function Header({
             className="appearance-none pl-2 xs:pl-3 pr-7 xs:pr-8 py-1.5 xs:py-2 max-w-[9rem] xs:max-w-none bg-theme-btn hover:bg-theme-btn-hover border border-theme-border rounded-xl text-xs xs:text-sm font-semibold text-theme-text focus:outline-none cursor-pointer transition-all"
           >
             <option value="charcoal-grey">⚙️ Charcoal Grey</option>
-            <option value="light-violet">🔮 Light Violet</option>
             <option value="sapphire-dark">🌌 Sapphire Dark</option>
             <option value="emerald-forest">🌲 Emerald Forest</option>
-            <option value="deep-navy">⚓ Deep Navy (OKLCH)</option>
-            <option value="navy-light">💎 Navy Light (OKLCH)</option>
+            <option value="navy-light">💎 Navy Light</option>
           </select>
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-theme-text-muted">
             <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -68,7 +84,7 @@ export default function Header({
         </div>
 
         {/* Notifications Dropdown Button */}
-        <div className="relative">
+        <div ref={notificationRef} className="relative">
           <button 
             onClick={() => {
               setShowNotifications(!showNotifications);
@@ -94,15 +110,15 @@ export default function Header({
                   Reset
                 </button>
               </div>
-              <div className="space-y-3.5 max-h-[250px] overflow-y-auto">
+              <div className="space-y-1 max-h-[250px] overflow-y-auto -mx-2 px-2">
                 {[
                   { id: 1, text: "📈 Hadapsar average price appreciated by 4.2% in Q1 2026.", time: "1 hour ago" },
                   { id: 2, text: "⚠️ Pre-handover alert: XYZ Builders reported delays in Wakad project.", time: "4 hours ago" },
                   { id: 3, text: "🔔 New listings added for Kharadi and Kalyani Nagar.", time: "1 day ago" }
                 ].map(n => (
-                  <div key={n.id} className="text-xs space-y-1 pb-2 border-b border-theme-border/10 last:border-0 last:pb-0">
+                  <div key={n.id} className="text-xs p-2.5 rounded-lg hover:bg-theme-btn-hover transition-colors border-b border-theme-border/5 last:border-0">
                     <p className="text-theme-text-light font-medium leading-relaxed">{n.text}</p>
-                    <span className="text-[10px] text-theme-text-muted font-mono">{n.time}</span>
+                    <div className="text-[10px] text-theme-text-muted font-mono mt-1">{n.time}</div>
                   </div>
                 ))}
               </div>
@@ -111,7 +127,7 @@ export default function Header({
         </div>
 
         {/* Profile Dropdown Button */}
-        <div className="relative">
+        <div ref={profileRef} className="relative">
           <button 
             onClick={() => {
               setShowProfileDropdown(!showProfileDropdown);

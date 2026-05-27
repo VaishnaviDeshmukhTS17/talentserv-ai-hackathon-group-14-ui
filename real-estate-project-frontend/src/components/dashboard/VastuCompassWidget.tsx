@@ -124,17 +124,17 @@ export default function VastuCompassWidget({ property }: VastuCompassWidgetProps
             className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-md text-[10px] sm:text-xs font-mono font-bold transition-all cursor-pointer ${
               viewMode === 'compass' 
                 ? 'bg-theme-accent text-white shadow shadow-theme-accent/20' 
-                : 'text-theme-text-muted hover:text-white'
+                : 'text-theme-text-muted hover:text-theme-text-light'
             }`}
           >
             <Compass className="w-3.5 h-3.5" /> Compass
           </button>
           <button
             onClick={() => setViewMode('floorplan')}
-            className={`flex-1 flex-items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-md text-[10px] sm:text-xs font-mono font-bold transition-all cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-md text-[10px] sm:text-xs font-mono font-bold transition-all cursor-pointer ${
               viewMode === 'floorplan' 
                 ? 'bg-theme-accent text-white shadow shadow-theme-accent/20' 
-                : 'text-theme-text-muted hover:text-white'
+                : 'text-theme-text-muted hover:text-theme-text-light'
             }`}
           >
             <Grid className="w-3.5 h-3.5" /> Floor Plan
@@ -268,7 +268,7 @@ export default function VastuCompassWidget({ property }: VastuCompassWidgetProps
         {/* Score Header */}
         <div className="flex items-center justify-between border-b border-theme-border pb-3 mb-4">
           <div>
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <h3 className="text-lg font-bold text-theme-text-light flex items-center gap-2">
               Vastu Audit Report
               <span className={`text-xs px-2 py-0.5 rounded-full border ${getScoreColor(vastu_score)} font-mono font-bold tracking-wide`}>
                 {vastu_compliant_level}
@@ -277,7 +277,7 @@ export default function VastuCompassWidget({ property }: VastuCompassWidgetProps
             <p className="text-xs text-theme-text-muted mt-1">Detailed directional compliance matching architectural shastras.</p>
           </div>
           <div className="text-right">
-            <span className="text-2xl font-bold font-mono text-white">{vastu_score}%</span>
+            <span className="text-2xl font-bold font-mono text-theme-text-light">{vastu_score}%</span>
             <div className="text-[10px] text-theme-text-muted uppercase tracking-wider font-mono">Score</div>
           </div>
         </div>
@@ -303,8 +303,8 @@ export default function VastuCompassWidget({ property }: VastuCompassWidgetProps
             <div className="flex items-start gap-2.5">
               <Compass className="w-4 h-4 text-sky-400 mt-0.5 shrink-0" />
               <div>
-                <div className="text-xs font-semibold text-white">Property Entrance</div>
-                <div className="text-[11px] text-theme-text-muted">Facing: <span className="font-semibold text-white">{facing_direction}</span> (Ideal: East / North)</div>
+                <div className="text-xs font-semibold text-theme-text-light">Property Entrance</div>
+                <div className="text-[11px] text-theme-text-muted">Facing: <span className="font-semibold text-theme-text-light">{facing_direction}</span> (Ideal: East / North)</div>
               </div>
             </div>
             <div>
@@ -327,8 +327,8 @@ export default function VastuCompassWidget({ property }: VastuCompassWidgetProps
             <div className="flex items-start gap-2.5">
               <Flame className="w-4 h-4 text-orange-400 mt-0.5 shrink-0" />
               <div>
-                <div className="text-xs font-semibold text-white">Kitchen Placement</div>
-                <div className="text-[11px] text-theme-text-muted">Zone: <span className="font-semibold text-white">{kitchen_direction}</span> (Ideal: South-East / North-West)</div>
+                <div className="text-xs font-semibold text-theme-text-light">Kitchen Placement</div>
+                <div className="text-[11px] text-theme-text-muted">Zone: <span className="font-semibold text-theme-text-light">{kitchen_direction}</span> (Ideal: South-East / North-West)</div>
               </div>
             </div>
             <div>
@@ -351,8 +351,8 @@ export default function VastuCompassWidget({ property }: VastuCompassWidgetProps
             <div className="flex items-start gap-2.5">
               <Bed className="w-4 h-4 text-purple-400 mt-0.5 shrink-0" />
               <div>
-                <div className="text-xs font-semibold text-white">Master Bedroom</div>
-                <div className="text-[11px] text-theme-text-muted">Zone: <span className="font-semibold text-white">{bedroom_direction}</span> (Ideal: South-West / South)</div>
+                <div className="text-xs font-semibold text-theme-text-light">Master Bedroom</div>
+                <div className="text-[11px] text-theme-text-muted">Zone: <span className="font-semibold text-theme-text-light">{bedroom_direction}</span> (Ideal: South-West / South)</div>
               </div>
             </div>
             <div>
@@ -376,8 +376,8 @@ export default function VastuCompassWidget({ property }: VastuCompassWidgetProps
               <div className="flex items-start gap-2.5">
                 <Sparkles className="w-4 h-4 text-yellow-400 mt-0.5 shrink-0" />
                 <div>
-                  <div className="text-xs font-semibold text-white">Pooja Room (prayer altar)</div>
-                  <div className="text-[11px] text-theme-text-muted">Zone: <span className="font-semibold text-white">{pooja_direction}</span> (Ideal: North-East)</div>
+                  <div className="text-xs font-semibold text-theme-text-light">Pooja Room (prayer altar)</div>
+                  <div className="text-[11px] text-theme-text-muted">Zone: <span className="font-semibold text-theme-text-light">{pooja_direction}</span> (Ideal: North-East)</div>
                 </div>
               </div>
               <div>
@@ -395,8 +395,8 @@ export default function VastuCompassWidget({ property }: VastuCompassWidgetProps
             <div className="flex items-start gap-2.5">
               <Info className="w-4 h-4 text-teal-400 mt-0.5 shrink-0" />
               <div>
-                <div className="text-xs font-semibold text-white">Layout Structure Shape</div>
-                <div className="text-[11px] text-theme-text-muted">Shape: <span className="font-semibold text-white">{layout_shape}</span> (Ideal: Square / Rectangular)</div>
+                <div className="text-xs font-semibold text-theme-text-light">Layout Structure Shape</div>
+                <div className="text-[11px] text-theme-text-muted">Shape: <span className="font-semibold text-theme-text-light">{layout_shape}</span> (Ideal: Square / Rectangular)</div>
               </div>
             </div>
             <div>

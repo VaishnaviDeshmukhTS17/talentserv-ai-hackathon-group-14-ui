@@ -73,39 +73,6 @@
   --theme-dot-color: rgba(255, 255, 255, 0.07);
 }
 
-[data-theme="light-violet"] {
-  --theme-bg: #f4f6fa;
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #e8e2fa 0%, #f4f6fa 60%, #e2e8f0 100%);
-  --theme-sidebar: rgba(255, 255, 255, 0.85);
-  --theme-panel: rgba(255, 255, 255, 0.7);
-  --theme-card: rgba(255, 255, 255, 0.85);
-  --theme-card-hover: rgba(255, 255, 255, 0.95);
-  --theme-border: rgba(124, 58, 237, 0.18);
-  --theme-border-hover: rgba(124, 58, 237, 0.3);
-  --theme-text: #1e1b4b;
-  --theme-text-muted: #475569;
-  --theme-accent: #7c3aed;
-  --theme-accent-muted: rgba(124, 58, 237, 0.08);
-  --theme-accent-border: rgba(124, 58, 237, 0.2);
-  --theme-input: rgba(255, 255, 255, 0.95);
-  --theme-btn: rgba(124, 58, 237, 0.08);
-  --theme-btn-hover: rgba(124, 58, 237, 0.16);
-  --theme-shadow: rgba(124, 58, 237, 0.08);
-  --theme-text-light: #4c1d95;
-  --theme-dot-color: rgba(124, 58, 237, 0.08);
-  --color-emerald-400: #444;
-  --color-amber-400: #444;
-  --color-blue-400: #444;
-  --color-purple-400: #444;
-}
-
-/* Light violet: force readable text on light background (vars alone can lose to @theme :root) */
-[data-theme="light-violet"] .text-emerald-400,
-[data-theme="light-violet"] .text-amber-400,
-[data-theme="light-violet"] .text-blue-400,
-[data-theme="light-violet"] .text-purple-400 {
-  color: #444;
-}
 
 [data-theme="sapphire-dark"] {
   --theme-bg: #131b2e;
@@ -151,56 +118,77 @@
   --theme-dot-color: rgba(52, 211, 153, 0.08);
 }
 
-[data-theme="deep-navy"] {
-  --theme-bg: oklch(0.16 0.03 255);
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, oklch(0.24 0.04 255) 0%, oklch(0.16 0.03 255) 65%, oklch(0.1 0.02 255) 100%);
-  --theme-sidebar: oklch(0.16 0.03 255 / 85%);
-  --theme-panel: oklch(0.22 0.04 255 / 65%);
-  --theme-card: oklch(0.22 0.04 255 / 65%);
-  --theme-card-hover: oklch(0.26 0.05 255 / 85%);
-  --theme-border: oklch(1 0 0 / 12%);
-  --theme-border-hover: oklch(1 0 0 / 22%);
-  --theme-text: oklch(0.96 0.01 240);
-  --theme-text-muted: oklch(0.7 0.02 240);
-  --theme-accent: oklch(0.78 0.14 165);
-  --theme-accent-muted: oklch(0.78 0.14 165 / 12%);
-  --theme-accent-border: oklch(0.78 0.14 165 / 25%);
-  --theme-input: oklch(0.16 0.03 255 / 55%);
-  --theme-btn: oklch(0.78 0.14 165 / 8%);
-  --theme-btn-hover: oklch(0.78 0.14 165 / 16%);
-  --theme-shadow: rgba(0, 0, 0, 0.45);
-  --theme-text-light: #ffffff;
-  --theme-dot-color: oklch(0.78 0.14 165 / 7%);
-}
 
 [data-theme="navy-light"] {
-  --theme-bg: oklch(0.985 0.006 240);
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, oklch(0.95 0.015 240) 0%, oklch(0.985 0.006 240) 60%, oklch(0.92 0.01 240) 100%);
+  --theme-bg: oklch(0.96 0.01 240);
+  --theme-bg-gradient: radial-gradient(circle at 50% 0%, oklch(0.98 0.01 240) 0%, oklch(0.95 0.015 240) 65%, oklch(0.91 0.02 240) 100%);
   --theme-sidebar: oklch(1 0 0 / 85%);
-  --theme-panel: oklch(1 0 0 / 70%);
-  --theme-card: oklch(1 0 0 / 85%);
-  --theme-card-hover: oklch(1 0 0 / 95%);
-  --theme-border: oklch(0.32 0.09 255 / 15%);
-  --theme-border-hover: oklch(0.32 0.09 255 / 28%);
-  --theme-text: oklch(0.18 0.04 250);
-  --theme-text-muted: oklch(0.5 0.03 250);
-  --theme-accent: oklch(0.32 0.09 255);
-  --theme-accent-muted: oklch(0.32 0.09 255 / 8%);
-  --theme-accent-border: oklch(0.32 0.09 255 / 20%);
-  --theme-input: oklch(1 0 0 / 95%);
-  --theme-btn: oklch(0.32 0.09 255 / 8%);
-  --theme-btn-hover: oklch(0.32 0.09 255 / 16%);
-  --theme-shadow: oklch(0.32 0.09 255 / 6%);
-  --theme-text-light: oklch(0.18 0.04 250);
-  --theme-dot-color: oklch(0.32 0.09 255 / 8%);
+  --theme-panel: oklch(0.99 0.005 245 / 75%);
+  --theme-card: oklch(1 0 0 / 80%);
+  --theme-card-hover: oklch(0.995 0.005 240 / 95%);
+  --theme-border: oklch(0.89 0.01 240);
+  --theme-border-hover: oklch(0.8 0.02 240);
+  --theme-text: oklch(0.25 0.06 245);
+  --theme-text-muted: oklch(0.45 0.03 240);
+  --theme-accent: oklch(0.55 0.22 255);
+  --theme-accent-muted: oklch(0.55 0.22 255 / 10%);
+  --theme-accent-border: oklch(0.55 0.22 255 / 25%);
+  --theme-input: oklch(1 0 0 / 90%);
+  --theme-btn: oklch(0.55 0.22 255 / 8%);
+  --theme-btn-hover: oklch(0.55 0.22 255 / 18%);
+  --theme-shadow: rgba(10, 30, 80, 0.12);
+  --theme-text-light: oklch(0.25 0.06 245);
+  --theme-dot-color: oklch(0.55 0.22 255 / 6%);
+}
+/* Light themes status and utility badge styling overrides */
+[data-theme="navy-light"] .bg-emerald-950\/40 {
+  background-color: oklch(0.94 0.04 160) !important;
+  color: oklch(0.35 0.12 160) !important;
+  border-color: oklch(0.35 0.12 160 / 20%) !important;
 }
 
-[data-theme="navy-light"] .text-emerald-400,
-[data-theme="navy-light"] .text-amber-400,
-[data-theme="navy-light"] .text-blue-400,
-[data-theme="navy-light"] .text-purple-400 {
-  color: oklch(0.32 0.09 255);
+[data-theme="navy-light"] .bg-amber-950\/40 {
+  background-color: oklch(0.96 0.04 60) !important;
+  color: oklch(0.42 0.13 60) !important;
+  border-color: oklch(0.42 0.13 60 / 20%) !important;
 }
+
+[data-theme="navy-light"] .bg-red-950\/15 {
+  background-color: oklch(0.96 0.02 20) !important;
+  color: oklch(0.45 0.14 20) !important;
+  border-color: oklch(0.45 0.14 20 / 20%) !important;
+}
+
+[data-theme="navy-light"] .bg-blue-950\/40 {
+  background-color: oklch(0.94 0.04 250) !important;
+  color: oklch(0.35 0.12 250) !important;
+  border-color: oklch(0.35 0.12 250 / 20%) !important;
+}
+
+[data-theme="navy-light"] .bg-rose-950\/40 {
+  background-color: oklch(0.96 0.03 15) !important;
+  color: oklch(0.45 0.13 15) !important;
+  border-color: oklch(0.45 0.13 15 / 20%) !important;
+}
+
+/* Light themes color overrides for text utility colors */
+[data-theme="navy-light"] .text-emerald-400 { color: oklch(0.35 0.12 160) !important; }
+
+[data-theme="navy-light"] .text-amber-400 { color: oklch(0.42 0.13 60) !important; }
+
+[data-theme="navy-light"] .text-blue-400 { color: oklch(0.35 0.12 250) !important; }
+
+[data-theme="navy-light"] .text-purple-400 { color: oklch(0.35 0.13 290) !important; }
+
+[data-theme="navy-light"] .text-red-400 { color: oklch(0.45 0.14 20) !important; }
+
+[data-theme="navy-light"] .text-sky-400 { color: oklch(0.35 0.12 250) !important; }
+
+[data-theme="navy-light"] .text-emerald-500 { color: oklch(0.35 0.12 160) !important; }
+
+[data-theme="navy-light"] .text-amber-500 { color: oklch(0.42 0.13 60) !important; }
+
+[data-theme="navy-light"] .text-red-500 { color: oklch(0.45 0.14 20) !important; }
 
 @utility glass-panel {
   background: var(--theme-panel);

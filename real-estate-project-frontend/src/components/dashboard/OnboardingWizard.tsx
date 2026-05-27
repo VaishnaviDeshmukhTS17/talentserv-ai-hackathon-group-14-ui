@@ -127,14 +127,14 @@ export default function OnboardingWizard({
                 </button>
 
                 <button 
-                  onClick={() => setTheme('light-violet')}
-                  className={`p-3.5 rounded-xl border text-left space-y-2 transition-all cursor-pointer ${theme === 'light-violet' ? 'bg-theme-accent-muted border-theme-accent text-theme-text-light shadow-lg' : 'bg-theme-card border-theme-border text-theme-text-muted hover:border-theme-border-hover'}`}
+                  onClick={() => setTheme('navy-light')}
+                  className={`p-3.5 rounded-xl border text-left space-y-2 transition-all cursor-pointer ${theme === 'navy-light' ? 'bg-theme-accent-muted border-theme-accent text-theme-text-light shadow-lg' : 'bg-theme-card border-theme-border text-theme-text-muted hover:border-theme-border-hover'}`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-theme-text-light font-mono uppercase tracking-wider">Light Violet</span>
-                    <div className="w-3.5 h-3.5 rounded-full bg-[#7c3aed] border border-white/20"></div>
+                    <span className="text-xs font-bold text-theme-text-light font-mono uppercase tracking-wider">Navy Light</span>
+                    <div className="w-3.5 h-3.5 rounded-full bg-[#2563eb] border border-white/20"></div>
                   </div>
-                  <div className="text-[10px] text-theme-text-muted leading-relaxed">Clean frosted-glass light theme.</div>
+                  <div className="text-[10px] text-theme-text-muted leading-relaxed">Clean high-contrast light theme with rich navy tones.</div>
                 </button>
               </div>
             </div>

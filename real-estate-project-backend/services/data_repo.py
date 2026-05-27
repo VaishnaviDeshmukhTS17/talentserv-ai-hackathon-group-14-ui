@@ -143,4 +143,44 @@ MOCK_REVIEWS: dict[str, list[str]] = {
         "Water logging is a major concern during heavy rains.",
         "Great society environment, family friendly gated communities.",
     ],
+    "Baner": [
+        "Amazing premium lifestyle and top high street restaurants.",
+        "Extremely high property prices and cost of living here.",
+        "Very close to Balewadi High Street hotspots.",
+    ],
+    "Hadapsar": [
+        "Very convenient commute for SP Infocity and Magarpatta tech parks.",
+        "Traffic congestion near the Hadapsar flyover is a daily bottleneck.",
+        "Amanora and Nanded townships have top-tier family amenities.",
+    ],
+    "Kharadi": [
+        "Super close to EON IT Park and World Trade Center.",
+        "Heavy dust and air pollution due to ongoing highrise construction.",
+        "Excellent rental yields for investments.",
+    ],
+    "Viman Nagar": [
+        "Vibrant premium lifestyle with Phoenix Marketcity and airport close by.",
+        "Aircraft landing decibel noise is a nuisance in select lanes.",
+        "Mature residential avenues with high demand.",
+    ],
+    "Kothrud": [
+        "Extremely safe, green, and traditional neighborhood.",
+        "Older buildings and narrow inner lanes make parking difficult.",
+        "Top-class educational facilities and parks.",
+    ],
+    "Kalyani Nagar": [
+        "Quiet and elite tree-lined residential community.",
+        "High property price thresholds make it unaffordable for many.",
+        "Immediate access to Koregaon Park clubs and restaurants.",
+    ],
+    "Indiranagar": [
+        "Elite high street commercial shopping and nightlife hub.",
+        "Excessive noise levels and weekend traffic congestion on 100 feet road.",
+        "Mature residential canopy with very high lease prices.",
+    ],
+    "Koramangala": [
+        "Major startup workspace ecosystem and popular eateries.",
+        "Prone to temporary water logging in low-lying blocks during monsoon.",
+        "Central location with excellent connectivity.",
+    ],
 }

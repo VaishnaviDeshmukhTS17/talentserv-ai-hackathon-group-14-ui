@@ -84,9 +84,9 @@ export default function OverviewTab(props: OverviewTabProps) {
   const getLocalityTrendsData = () => {
     const palettes: Record<string, string[]> = {
       'charcoal-grey': ['#d4d4d8', '#a1a1aa', '#71717a', '#52525b', '#3f3f46'],
-      'light-violet': ['#7c3aed', '#8b5cf6', '#a78bfa', '#c084fc', '#d8b4fe'],
       'sapphire-dark': ['#38bdf8', '#0ea5e9', '#0284c7', '#0369a1', '#075985'],
-      'emerald-forest': ['#34d399', '#10b981', '#059669', '#047857', '#065f46']
+      'emerald-forest': ['#34d399', '#10b981', '#059669', '#047857', '#065f46'],
+      'navy-light': ['#1e3a8a', '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd']
     };
     const palette = palettes[theme] || palettes['charcoal-grey'];
 
@@ -110,12 +110,24 @@ export default function OverviewTab(props: OverviewTabProps) {
   const chartData = getLocalityTrendsData();
 
   // Locality sentiment from latest search (falls back to static mock)
-  const sentimentInfo = currentSentiment || localitySentimentData[currentLocality] || {
+  const staticSentiment = localitySentimentData[currentLocality] || {
     sentiment_score: 0.78,
     positive_themes: ["Connectivity", "Amenities", "Construction Quality"],
     negative_themes: ["Traffic", "Construction Delay", "High Price"],
     sentiment_summary: ""
   };
+
+  const sentimentInfo = {
+    sentiment_score: currentSentiment?.sentiment_score ?? staticSentiment.sentiment_score,
+    positive_themes: (currentSentiment?.positive_themes && currentSentiment.positive_themes.length > 0)
+      ? currentSentiment.positive_themes
+      : staticSentiment.positive_themes,
+    negative_themes: (currentSentiment?.negative_themes && currentSentiment.negative_themes.length > 0)
+      ? currentSentiment.negative_themes
+      : staticSentiment.negative_themes,
+    sentiment_summary: currentSentiment?.sentiment_summary || staticSentiment.sentiment_summary
+  };
+
   const sentimentScore = sentimentInfo.sentiment_score;
   const sentimentChartData = [
     { name: 'Positive', value: Math.round(sentimentScore * 100) },

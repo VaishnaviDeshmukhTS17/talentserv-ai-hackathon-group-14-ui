@@ -118,9 +118,7 @@ export default function SettingsTab({
                 { id: 'charcoal-grey', label: 'Titanium Slate', color: '#a1a1aa' },
                 { id: 'sapphire-dark', label: 'Sapphire Dark', color: '#38bdf8' },
                 { id: 'emerald-forest', label: 'Emerald Forest', color: '#34d399' },
-                { id: 'light-violet', label: 'Light Violet', color: '#7c3aed' },
-                { id: 'deep-navy', label: 'Deep Navy (OKLCH)', color: '#10b981' },
-                { id: 'navy-light', label: 'Navy Light (OKLCH)', color: '#1e3a8a' },
+                { id: 'navy-light', label: 'Navy Light', color: '#2563eb' },
               ].map((th) => (
                 <button
                   key={th.id}

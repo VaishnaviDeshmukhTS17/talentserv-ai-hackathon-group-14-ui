@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   Sparkles, Terminal, LogOut, X,
   LayoutDashboard, ClipboardList, Home, Layers, Building2, 
@@ -27,6 +27,20 @@ export default function Sidebar({
   onMobileClose,
 }: SidebarProps) {
   const [isProfileExpanded, setIsProfileExpanded] = useState(false);
+
+  const profileSectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (profileSectionRef.current && !profileSectionRef.current.contains(event.target as Node)) {
+        setIsProfileExpanded(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard },
@@ -87,11 +101,11 @@ export default function Sidebar({
                 onClick={() => pickTab(item.name)}
                 className={`w-full flex items-center gap-3 px-3 xs:px-4 py-2.5 xs:py-3 text-xs xs:text-sm font-semibold rounded-xl transition-all duration-200 ${
                   isActive 
-                    ? 'bg-theme-accent-muted border border-theme-accent-border text-theme-accent shadow-sm' 
-                    : 'hover:bg-white/3 text-theme-text-muted hover:text-theme-text border border-transparent'
+                    ? 'bg-theme-accent text-theme-bg border border-transparent shadow-sm font-bold' 
+                    : 'hover:bg-theme-btn-hover text-theme-text-muted hover:text-theme-text border border-transparent'
                 }`}
               >
-                <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-theme-accent' : 'text-theme-text-muted'}`} />
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-theme-bg' : 'text-theme-text-muted'}`} />
                 <span className="truncate text-left">{item.name}</span>
                 {item.name === 'Comparisons' && selectedPropertiesCount > 0 && (
                   <span className="ml-auto px-1.5 py-0.5 text-xs bg-theme-accent text-theme-bg rounded-full font-bold shrink-0">
@@ -107,7 +121,7 @@ export default function Sidebar({
               setIsConsoleOpen(true);
               onMobileClose?.();
             }}
-            className="w-full flex items-center gap-3 px-3 xs:px-4 py-2.5 xs:py-3 text-xs xs:text-sm font-mono font-semibold text-theme-text-muted hover:text-theme-text-light hover:bg-white/3 rounded-xl transition-all duration-200 border border-transparent"
+            className="w-full flex items-center gap-3 px-3 xs:px-4 py-2.5 xs:py-3 text-xs xs:text-sm font-mono font-semibold text-theme-text-muted hover:text-theme-text hover:bg-theme-btn-hover rounded-xl transition-all duration-200 border border-transparent"
           >
             <Terminal className="w-4 h-4 shrink-0 text-theme-text-muted" />
             <span>Developer Logs</span>
@@ -115,7 +129,7 @@ export default function Sidebar({
         </nav>
       </div>
 
-      <div className="space-y-3 xs:space-y-4 pt-4 xs:pt-6 border-t border-theme-border flex-shrink-0">
+      <div ref={profileSectionRef} className="space-y-3 xs:space-y-4 pt-4 xs:pt-6 border-t border-theme-border flex-shrink-0">
         <div 
           onClick={() => setIsProfileExpanded(!isProfileExpanded)}
           className="flex items-center gap-3 p-2 rounded-xl hover:bg-theme-btn-hover transition-colors cursor-pointer relative"

@@ -151,6 +151,57 @@
   --theme-dot-color: rgba(52, 211, 153, 0.08);
 }
 
+[data-theme="deep-navy"] {
+  --theme-bg: oklch(0.16 0.03 255);
+  --theme-bg-gradient: radial-gradient(circle at 50% 0%, oklch(0.24 0.04 255) 0%, oklch(0.16 0.03 255) 65%, oklch(0.1 0.02 255) 100%);
+  --theme-sidebar: oklch(0.16 0.03 255 / 85%);
+  --theme-panel: oklch(0.22 0.04 255 / 65%);
+  --theme-card: oklch(0.22 0.04 255 / 65%);
+  --theme-card-hover: oklch(0.26 0.05 255 / 85%);
+  --theme-border: oklch(1 0 0 / 12%);
+  --theme-border-hover: oklch(1 0 0 / 22%);
+  --theme-text: oklch(0.96 0.01 240);
+  --theme-text-muted: oklch(0.7 0.02 240);
+  --theme-accent: oklch(0.78 0.14 165);
+  --theme-accent-muted: oklch(0.78 0.14 165 / 12%);
+  --theme-accent-border: oklch(0.78 0.14 165 / 25%);
+  --theme-input: oklch(0.16 0.03 255 / 55%);
+  --theme-btn: oklch(0.78 0.14 165 / 8%);
+  --theme-btn-hover: oklch(0.78 0.14 165 / 16%);
+  --theme-shadow: rgba(0, 0, 0, 0.45);
+  --theme-text-light: #ffffff;
+  --theme-dot-color: oklch(0.78 0.14 165 / 7%);
+}
+
+[data-theme="navy-light"] {
+  --theme-bg: oklch(0.985 0.006 240);
+  --theme-bg-gradient: radial-gradient(circle at 50% 0%, oklch(0.95 0.015 240) 0%, oklch(0.985 0.006 240) 60%, oklch(0.92 0.01 240) 100%);
+  --theme-sidebar: oklch(1 0 0 / 85%);
+  --theme-panel: oklch(1 0 0 / 70%);
+  --theme-card: oklch(1 0 0 / 85%);
+  --theme-card-hover: oklch(1 0 0 / 95%);
+  --theme-border: oklch(0.32 0.09 255 / 15%);
+  --theme-border-hover: oklch(0.32 0.09 255 / 28%);
+  --theme-text: oklch(0.18 0.04 250);
+  --theme-text-muted: oklch(0.5 0.03 250);
+  --theme-accent: oklch(0.32 0.09 255);
+  --theme-accent-muted: oklch(0.32 0.09 255 / 8%);
+  --theme-accent-border: oklch(0.32 0.09 255 / 20%);
+  --theme-input: oklch(1 0 0 / 95%);
+  --theme-btn: oklch(0.32 0.09 255 / 8%);
+  --theme-btn-hover: oklch(0.32 0.09 255 / 16%);
+  --theme-shadow: oklch(0.32 0.09 255 / 6%);
+  --theme-text-light: oklch(0.18 0.04 250);
+  --theme-dot-color: oklch(0.32 0.09 255 / 8%);
+}
+
+[data-theme="navy-light"] .text-emerald-400,
+[data-theme="navy-light"] .text-amber-400,
+[data-theme="navy-light"] .text-blue-400,
+[data-theme="navy-light"] .text-purple-400 {
+  color: oklch(0.32 0.09 255);
+}
+
 @utility glass-panel {
   background: var(--theme-panel);
   backdrop-filter: blur(16px);
